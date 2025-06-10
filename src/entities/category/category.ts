@@ -6,6 +6,7 @@ import {
   JoinColumn,
   OneToMany,
 } from 'typeorm';
+import { Product } from '../product/product';
 
 @Entity()
 export class Category {
@@ -39,4 +40,6 @@ export class Category {
   parentCategory: Category;
   @OneToMany(() => Category, (category) => category.parentCategory)
   children: Category[];
+  @OneToMany(() => Product, (product) => product.category)
+  products: Product[];
 }
