@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Warehouse } from '../warehouse/warehouse';
 
 @Entity()
 export class Location {
@@ -19,4 +20,7 @@ export class Location {
 
   @Column({ type: 'text', nullable: true })
   note: string;
+
+  @ManyToOne(() => Warehouse)
+  warehouse: Warehouse[];
 }

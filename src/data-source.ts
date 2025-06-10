@@ -3,7 +3,7 @@ import { DataSource } from 'typeorm';
 import { Location } from './entities/location/location';
 import { Category } from './entities/category/category';
 import { Product } from './entities/product/product';
-import { WarehouseTipe } from './entities/warehouse-tipe/warehouse-tipe';
+import { WarehouseType } from './entities/warehouse-type/warehouse-type';
 
 export const AppDataSource = new DataSource({
   type: 'mysql',
@@ -12,7 +12,7 @@ export const AppDataSource = new DataSource({
   username: 'root',
   password: '12032003',
   database: 'mini_stock',
-  entities: [Location, Category, Product, WarehouseTipe],
+  entities: [Location, Category, Product, WarehouseType],
   synchronize: true,
   logging: false,
 });
