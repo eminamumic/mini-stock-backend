@@ -6,9 +6,11 @@ import {
   UpdateDateColumn,
   ManyToOne,
   JoinColumn,
+  OneToMany,
 } from 'typeorm';
 
 import { Category } from '../category/category';
+import { Batch } from '../batch/batch';
 
 @Entity()
 export class Product {
@@ -35,6 +37,9 @@ export class Product {
   })
   @JoinColumn({ name: 'category_id' })
   category: Category;
+
+  @OneToMany(() => Batch, (batch) => batch.product)
+  batches: Batch[];
 
   @Column({ type: 'text', nullable: true })
   description: string;
