@@ -4,6 +4,8 @@ import { Location } from './entities/location/location';
 import { Category } from './entities/category/category';
 import { Product } from './entities/product/product';
 import { WarehouseType } from './entities/warehouse-type/warehouse-type';
+import { Warehouse } from './entities/warehouse/warehouse';
+import { Batch } from './entities/batch/batch';
 
 export const AppDataSource = new DataSource({
   type: 'mysql',
@@ -12,7 +14,7 @@ export const AppDataSource = new DataSource({
   username: 'root',
   password: '12032003',
   database: 'mini_stock',
-  entities: [Location, Category, Product, WarehouseType],
+  entities: [Location, Category, Product, WarehouseType, Warehouse, Batch],
   synchronize: true,
   logging: false,
 });
