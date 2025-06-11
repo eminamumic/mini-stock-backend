@@ -34,8 +34,9 @@ export const AppDataSource = new DataSource({
     Supplier,
     StockMovement,
   ],
-  synchronize: true,
-  logging: false,
+  synchronize: false,
+  migrations: ['./migrations/*.ts'],
+  logging: 'all',
 });
 
 AppDataSource.initialize()
