@@ -10,6 +10,7 @@ import { StockLevel } from './entities/stock-level/stock-level';
 import { User } from './entities/user/user';
 import { Employee } from './entities/employee/employee';
 import { WarehouseAccess } from './entities/warehouse-access/warehouse-access';
+import { Supplier } from './entities/supplier/supplier';
 
 export const AppDataSource = new DataSource({
   type: 'mysql',
@@ -29,6 +30,7 @@ export const AppDataSource = new DataSource({
     User,
     Employee,
     WarehouseAccess,
+    Supplier,
   ],
   synchronize: true,
   logging: false,
