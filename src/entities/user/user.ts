@@ -3,7 +3,10 @@ import {
   PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
+  OneToOne,
 } from 'typeorm';
+
+import { Employee } from '../employee/employee';
 
 @Entity()
 export class User {
@@ -46,4 +49,7 @@ export class User {
 
   @Column({ name: 'user_role', type: 'varchar', length: 50, nullable: false })
   userRole: string;
+
+  @OneToOne(() => Employee, (employee) => employee.user)
+  employee: Employee;
 }
