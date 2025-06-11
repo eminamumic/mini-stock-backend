@@ -7,6 +7,7 @@ import { WarehouseType } from './entities/warehouse-type/warehouse-type';
 import { Warehouse } from './entities/warehouse/warehouse';
 import { Batch } from './entities/batch/batch';
 import { StockLevel } from './entities/stock-level/stock-level';
+import { User } from './entities/user/user';
 
 export const AppDataSource = new DataSource({
   type: 'mysql',
@@ -23,6 +24,7 @@ export const AppDataSource = new DataSource({
     Warehouse,
     Batch,
     StockLevel,
+    User,
   ],
   synchronize: true,
   logging: false,
