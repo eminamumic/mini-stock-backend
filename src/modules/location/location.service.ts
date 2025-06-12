@@ -19,29 +19,20 @@ export class LocationService {
   return this.locationRepository.findOne({ where: { id } });
 }
 
-  async updateLocation(id: number, locationData: Partial<Location>): Promise<Location | null> {
-    const locationToUpdate = await this.locationRepository.findOneBy({ id });
-
-    if (!locationToUpdate) {
-      return null;
-    }
-
-    Object.assign(locationToUpdate, locationData);
-
-    return this.locationRepository.save(locationToUpdate);
-  }
-
-  async deleteLocation(id: number): Promise<boolean> {
-    const deleteResult = await this.locationRepository.delete(id);
-    return deleteResult.affected > 0;
-  }
 
   async getLocationsByZipCode(zipCode: string): Promise<Location[]> {
     return this.locationRepository.find({
       where: { zipCode: zipCode },
-      relations: ['warehouses'],
+     
     });
   }
+    
+    async getLocationWithAllRelations(id: number): Promise<Location | null> {
+  return this.locationRepository.findOne({ 
+    where: { id }, 
+    relations: ['warehouse', 'supplier'] 
+  });
+}
 
   async searchLocation(searchCriteria: {
     id?: number;
