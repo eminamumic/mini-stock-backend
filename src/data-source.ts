@@ -18,7 +18,7 @@ export const AppDataSource = new DataSource({
   host: 'localhost',
   port: 3306,
   username: 'root',
-  password: '12032003',
+  password: '',
   database: 'mini_stock',
   entities: [
     Location,
