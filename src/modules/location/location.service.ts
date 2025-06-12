@@ -11,7 +11,9 @@ export class LocationService {
     return savedLocation;
   }
 
-  
+  async getAllLocations(): Promise<Location[]> {
+    return this.locationRepository.find();
+  }
 
   async searchLocation(searchCriteria: {
     id?: number;
