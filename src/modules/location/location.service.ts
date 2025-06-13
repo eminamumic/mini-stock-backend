@@ -1,6 +1,6 @@
 import { AppDataSource } from 'src/data-source';
 import { Location } from 'src/entities/location/location';
-import { Like } from 'typeorm';
+import { FindOptionsWhere, Like } from 'typeorm';
 
 export class LocationService {
   private locationRepository = AppDataSource.getRepository(Location);
@@ -40,7 +40,7 @@ export class LocationService {
     zipCode?: string;
     note?: string;
   }): Promise<Location[]> {
-    const whereClause: Partial<Location> = {};
+    const whereClause: FindOptionsWhere<Location> = {};
 
     if (searchCriteria.id) {
       whereClause.id = searchCriteria.id;
