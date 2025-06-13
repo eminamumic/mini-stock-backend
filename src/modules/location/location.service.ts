@@ -86,4 +86,10 @@ export class LocationService {
 
     return updatedLocation;
   }
+
+  async deleteLocation(id: number): Promise<boolean> {
+    const locationToDelate = await this.locationRepository.delete(id);
+
+    return locationToDelate.affected !== 0;
+  }
 }
