@@ -15,24 +15,22 @@ export class LocationService {
     return this.locationRepository.find();
   }
 
- async getLocationById(id: number): Promise<Location | null> {
-  return this.locationRepository.findOne({ where: { id } });
-}
-
+  async getLocationById(id: number): Promise<Location | null> {
+    return this.locationRepository.findOne({ where: { id } });
+  }
 
   async getLocationsByZipCode(zipCode: string): Promise<Location[]> {
     return this.locationRepository.find({
       where: { zipCode: zipCode },
-     
     });
   }
-    
-    async getLocationWithAllRelations(id: number): Promise<Location | null> {
-  return this.locationRepository.findOne({ 
-    where: { id }, 
-    relations: ['warehouse', 'supplier'] 
-  });
-}
+
+  async getLocationWithAllRelations(id: number): Promise<Location | null> {
+    return this.locationRepository.findOne({
+      where: { id },
+      relations: ['warehouse', 'supplier'],
+    });
+  }
 
   async searchLocation(searchCriteria: {
     id?: number;
@@ -42,7 +40,7 @@ export class LocationService {
     zipCode?: string;
     note?: string;
   }): Promise<Location[]> {
-    const whereClause: any = {};
+    const whereClause: Partial<Location> = {};
 
     if (searchCriteria.id) {
       whereClause.id = searchCriteria.id;
@@ -63,8 +61,29 @@ export class LocationService {
       whereClause.note = Like(`%${searchCriteria.note}%`);
     }
 
-    return this.locationRepository.find({
+    const findLocation = await this.locationRepository.find({
       where: whereClause,
-      relations: ['warehouses'],
     });
+
+    return findLocation;
   }
+
+  async updateLocation(
+    id: number,
+    locationData: Partial<Location>,
+  ): Promise<Location | null> {
+    const locationToUpdate = await this.locationRepository.findOne({
+      where: { id },
+    });
+
+    if (!locationToUpdate) {
+      return null;
+    }
+
+    this.locationRepository.merge(locationToUpdate, locationData);
+    const updatedLocation =
+      await this.locationRepository.save(locationToUpdate);
+
+    return updatedLocation;
+  }
+}
