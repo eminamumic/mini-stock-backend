@@ -1,9 +1,14 @@
-import { AppDataSource } from 'src/data-source';
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository, FindOptionsWhere, Like } from 'typeorm';
 import { Location } from 'src/entities/location/location';
-import { FindOptionsWhere, Like } from 'typeorm';
 
+@Injectable()
 export class LocationService {
-  private locationRepository = AppDataSource.getRepository(Location);
+  constructor(
+    @InjectRepository(Location)
+    private readonly locationRepository: Repository<Location>,
+  ) {}
 
   async createLocation(locationData: Partial<Location>): Promise<Location> {
     const newLocation = this.locationRepository.create(locationData);
@@ -61,11 +66,9 @@ export class LocationService {
       whereClause.note = Like(`%${searchCriteria.note}%`);
     }
 
-    const findLocation = await this.locationRepository.find({
+    return this.locationRepository.find({
       where: whereClause,
     });
-
-    return findLocation;
   }
 
   async updateLocation(
@@ -88,8 +91,8 @@ export class LocationService {
   }
 
   async deleteLocation(id: number): Promise<boolean> {
-    const locationToDelate = await this.locationRepository.delete(id);
+    const deleteResult = await this.locationRepository.delete(id);
 
-    return locationToDelate.affected !== 0;
+    return deleteResult.affected !== 0;
   }
 }
