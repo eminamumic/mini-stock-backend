@@ -14,9 +14,8 @@ import { Employee } from './entities/employee/employee';
 import { WarehouseAccess } from './entities/warehouse-access/warehouse-access';
 import { Supplier } from './entities/supplier/supplier';
 import { StockMovement } from './entities/stock-movement/stock-movement';
-import { LocationModule } from './location/location.module';
-import { LocationService } from './location/location.service';
-import { LocationController } from './location/location.controller';
+
+import { LocationModule } from './modules/location/location.module';
 
 @Module({
   imports: [
@@ -46,7 +45,7 @@ import { LocationController } from './location/location.controller';
     }),
     LocationModule,
   ],
-  controllers: [AppController, LocationController],
-  providers: [AppService, LocationService],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}
