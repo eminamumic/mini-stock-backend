@@ -19,7 +19,7 @@ import { UpdateLocationDto } from './dto/update-location.dto';
 import { SearchLocationDto } from './dto/search-location.dto';
 import { Location } from 'src/entities/location/location';
 
-@Controller('location')
+@Controller('locations')
 export class LocationController {
   constructor(private readonly locationService: LocationService) {}
 
@@ -50,13 +50,13 @@ export class LocationController {
   @Get('zip/:zipCode')
   @HttpCode(HttpStatus.OK)
   async findByZipCode(@Param('zipCode') zipCode: string): Promise<Location[]> {
-    const location = await this.locationService.getLocationsByZipCode(zipCode);
-    if (!location) {
+    const locations = await this.locationService.getLocationsByZipCode(zipCode);
+    if (locations.length === 0) {
       throw new NotFoundException(
-        `Location with zip code ${zipCode} not found.`,
+        `Locations with zip code ${zipCode} not found.`,
       );
     }
-    return location;
+    return locations;
   }
 
   @Get(':id')
