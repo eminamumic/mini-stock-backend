@@ -10,9 +10,11 @@ import {
   Param,
   NotFoundException,
   Query,
+  Put,
 } from '@nestjs/common';
 import { LocationService } from './location.service';
 import { CreateLocationDto } from './dto/create-location.dto';
+import { UpdateLocationDto } from './dto/update-location.dto';
 import { SearchLocationDto } from './dto/search-location.dto';
 import { Location } from 'src/entities/location/location';
 
@@ -76,5 +78,22 @@ export class LocationController {
       );
     }
     return location;
+  }
+
+  @Put(':id')
+  @HttpCode(HttpStatus.OK)
+  @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
+  async update(
+    @Param('id') id: number,
+    @Body() updateLocationDto: UpdateLocationDto,
+  ): Promise<Location> {
+    const updatedLocation = await this.locationService.updateLocation(
+      id,
+      updateLocationDto,
+    );
+    if (!updatedLocation) {
+      throw new NotFoundException(`Location with ID ${id} not found.`);
+    }
+    return updatedLocation;
   }
 }
