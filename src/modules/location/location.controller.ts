@@ -6,6 +6,7 @@ import {
   UsePipes,
   Body,
   ValidationPipe,
+  Get,
 } from '@nestjs/common';
 import { LocationService } from './location.service';
 import { CreateLocationDto } from './dto/create-location.dto';
@@ -22,5 +23,11 @@ export class LocationController {
     @Body() createLocationDto: CreateLocationDto,
   ): Promise<Location> {
     return this.locationService.createLocation(createLocationDto);
+  }
+
+  @Get()
+  @HttpCode(HttpStatus.OK)
+  async findAll(): Promise<Location[]> {
+    return this.locationService.getAllLocations();
   }
 }
