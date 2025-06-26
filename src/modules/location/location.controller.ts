@@ -11,6 +11,7 @@ import {
   NotFoundException,
   Query,
   Put,
+  Delete,
 } from '@nestjs/common';
 import { LocationService } from './location.service';
 import { CreateLocationDto } from './dto/create-location.dto';
@@ -95,5 +96,14 @@ export class LocationController {
       throw new NotFoundException(`Location with ID ${id} not found.`);
     }
     return updatedLocation;
+  }
+
+  @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async remove(@Param('id') id: number): Promise<void> {
+    const deleted = await this.locationService.deleteLocation(id);
+    if (!deleted) {
+      throw new NotFoundException(`Location with ID ${id} not found.`);
+    }
   }
 }
