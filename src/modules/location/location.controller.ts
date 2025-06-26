@@ -42,4 +42,16 @@ export class LocationController {
     }
     return location;
   }
+
+  @Get(':id/relations')
+  @HttpCode(HttpStatus.OK)
+  async findOneWithRelations(@Param('id') id: number): Promise<Location> {
+    const location = await this.locationService.getLocationWithAllRelations(id);
+    if (!location) {
+      throw new NotFoundException(
+        `Location with ID ${id} (with relations) not found.`,
+      );
+    }
+    return location;
+  }
 }
