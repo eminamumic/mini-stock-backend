@@ -8,6 +8,7 @@ import {
   ValidationPipe,
   Get,
   Param,
+  NotFoundException,
 } from '@nestjs/common';
 import { LocationService } from './location.service';
 import { CreateLocationDto } from './dto/create-location.dto';
@@ -34,7 +35,11 @@ export class LocationController {
 
   @Get(':id')
   @HttpCode(HttpStatus.OK)
-  async findOne(@Param('id') id: number) {
-    return this.locationService.getLocationById(id);
+  async findOne(@Param('id') id: number): Promise<Location> {
+    const location = await this.locationService.getLocationById(id);
+    if (!location) {
+      throw new NotFoundException(`Location with ID ${id} not found.`);
+    }
+    return location;
   }
 }
