@@ -44,6 +44,18 @@ export class LocationController {
     return this.locationService.searchLocation(searchLocationDto);
   }
 
+  @Get('zip/:zipCode')
+  @HttpCode(HttpStatus.OK)
+  async findByZipCode(@Param('zipCode') zipCode: string): Promise<Location[]> {
+    const location = await this.locationService.getLocationsByZipCode(zipCode);
+    if (!location) {
+      throw new NotFoundException(
+        `Location with zip code ${zipCode} not found.`,
+      );
+    }
+    return location;
+  }
+
   @Get(':id')
   @HttpCode(HttpStatus.OK)
   async findOne(@Param('id') id: number): Promise<Location> {
