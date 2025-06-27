@@ -11,6 +11,7 @@ import {
   Param,
   NotFoundException,
   Put,
+  Delete,
 } from '@nestjs/common';
 
 import { CreateCategoryDto } from './dto/create-category.dto';
@@ -70,5 +71,14 @@ export class CategoryController {
       throw new NotFoundException(`Category with ID ${id} not found.`);
     }
     return updatedCategory;
+  }
+
+  @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async remove(@Param('id') id: number): Promise<void> {
+    const deleted = await this.categoryService.deleteCategory(id);
+    if (!deleted) {
+      throw new NotFoundException(`Category with ID ${id} not found.`);
+    }
   }
 }
