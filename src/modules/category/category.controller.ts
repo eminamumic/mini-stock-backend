@@ -6,11 +6,13 @@ import {
   UsePipes,
   ValidationPipe,
   Body,
+  Get,
 } from '@nestjs/common';
 
 import { CreateCategoryDto } from './dto/create-category.dto';
-import { Category } from 'src/entities/category/category';
+
 import { CategoryService } from './category.service';
+import { Category } from 'src/entities/category/category';
 
 @Controller('categories')
 export class CategoryController {
@@ -23,5 +25,11 @@ export class CategoryController {
     @Body() createCategoryDto: CreateCategoryDto,
   ): Promise<Category> {
     return this.categoryService.createCategory(createCategoryDto);
+  }
+
+  @Get()
+  @HttpCode(HttpStatus.OK)
+  async findAll(): Promise<Category[]> {
+    return this.categoryService.getAllCategories();
   }
 }
