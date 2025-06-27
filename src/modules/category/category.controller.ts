@@ -8,6 +8,8 @@ import {
   Body,
   Get,
   Query,
+  Param,
+  NotFoundException,
 } from '@nestjs/common';
 
 import { CreateCategoryDto } from './dto/create-category.dto';
@@ -40,5 +42,15 @@ export class CategoryController {
   @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
   async search(@Query() searchDto: SearchCategoryDto): Promise<Category[]> {
     return this.categoryService.searchCategories(searchDto);
+  }
+
+  @Get(':id')
+  @HttpCode(HttpStatus.OK)
+  async findOne(@Param('id') id: number): Promise<Category> {
+    const category = await this.categoryService.getCategoryById(id);
+    if (!category) {
+      throw new NotFoundException(`Category with ID ${id} not found.`);
+    }
+    return category;
   }
 }
