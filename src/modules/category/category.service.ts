@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Category } from 'src/entities/category/category';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { SearchCategoryDto } from './dto/search-category.dto';
+import { UpdateCategoryDto } from './dto/update-category.dto';
 import { FindOptionsWhere } from 'typeorm';
 import { Like } from 'typeorm';
 
@@ -48,5 +49,21 @@ export class CategoryService {
     return this.categoryRepository.find({
       where: whereClause,
     });
+  }
+
+  async updateCategory(
+    id: number,
+    updateCategoryDto: UpdateCategoryDto,
+  ): Promise<Category | null> {
+    const categoryToUpdate = await this.categoryRepository.findOne({
+      where: { id },
+    });
+
+    if (!categoryToUpdate) {
+      return null;
+    }
+
+    this.categoryRepository.merge(categoryToUpdate, updateCategoryDto);
+    return this.categoryRepository.save(categoryToUpdate);
   }
 }
