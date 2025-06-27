@@ -16,6 +16,7 @@ import { Supplier } from './entities/supplier/supplier';
 import { StockMovement } from './entities/stock-movement/stock-movement';
 
 import { LocationModule } from './modules/location/location.module';
+import { CategoryModule } from './modules/category/category.module';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { LocationModule } from './modules/location/location.module';
       logging: ['query', 'error'],
     }),
     LocationModule,
+    CategoryModule,
   ],
   controllers: [AppController],
   providers: [AppService],
