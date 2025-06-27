@@ -10,10 +10,11 @@ import {
   Query,
   Param,
   NotFoundException,
+  Put,
 } from '@nestjs/common';
 
 import { CreateCategoryDto } from './dto/create-category.dto';
-
+import { UpdateCategoryDto } from './dto/update-category.dto';
 import { CategoryService } from './category.service';
 import { Category } from 'src/entities/category/category';
 import { SearchCategoryDto } from './dto/search-category.dto';
@@ -52,5 +53,22 @@ export class CategoryController {
       throw new NotFoundException(`Category with ID ${id} not found.`);
     }
     return category;
+  }
+
+  @Put(':id')
+  @HttpCode(HttpStatus.OK)
+  @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
+  async update(
+    @Param('id') id: number,
+    @Body() updateCategoryDto: UpdateCategoryDto,
+  ): Promise<Category> {
+    const updatedCategory = await this.categoryService.updateCategory(
+      id,
+      updateCategoryDto,
+    );
+    if (!updatedCategory) {
+      throw new NotFoundException(`Category with ID ${id} not found.`);
+    }
+    return updatedCategory;
   }
 }
