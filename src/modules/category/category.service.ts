@@ -66,4 +66,10 @@ export class CategoryService {
     this.categoryRepository.merge(categoryToUpdate, updateCategoryDto);
     return this.categoryRepository.save(categoryToUpdate);
   }
+
+  async deleteCategory(id: number): Promise<boolean> {
+    const deleteResult = await this.categoryRepository.delete(id);
+
+    return deleteResult.affected !== 0;
+  }
 }
