@@ -7,7 +7,7 @@ import {
   Min,
 } from 'class-validator';
 
-export class CreateCategory {
+export class CreateCategoryDto {
   @IsString()
   @IsNotEmpty()
   @MaxLength(100)
