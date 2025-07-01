@@ -14,7 +14,7 @@ export class UserService {
     private readonly userRepository: Repository<User>,
   ) {}
 
-  async createUser(createUserDto: CreateUserDto): Promise<User> {
+  async create(createUserDto: CreateUserDto): Promise<User> {
     const existingUserByUsername = await this.userRepository.findOne({
       where: { username: createUserDto.username },
     });
@@ -57,7 +57,7 @@ export class UserService {
     return this.userRepository.findOne({ where: { username } });
   }
 
-  async searchUsers(searchCriteria: SearchUserDto): Promise<User[]> {
+  async search(searchCriteria: SearchUserDto): Promise<User[]> {
     const whereClause: FindOptionsWhere<User> = {};
 
     if (searchCriteria.id) {
@@ -87,10 +87,7 @@ export class UserService {
     });
   }
 
-  async updateUser(
-    id: number,
-    updateUserDto: UpdateUserDto,
-  ): Promise<User | null> {
+  async update(id: number, updateUserDto: UpdateUserDto): Promise<User | null> {
     const userToUpdate = await this.userRepository.findOne({ where: { id } });
 
     if (!userToUpdate) {
@@ -130,7 +127,7 @@ export class UserService {
     return this.userRepository.save(userToUpdate);
   }
 
-  async deleteUser(id: number): Promise<boolean> {
+  async delete(id: number): Promise<boolean> {
     const deleteResult = await this.userRepository.delete(id);
     return deleteResult.affected !== 0;
   }
