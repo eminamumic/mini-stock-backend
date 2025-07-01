@@ -49,7 +49,7 @@ export class CreateUserDto {
   @IsOptional()
   @IsEmail()
   @MaxLength(255)
-  email?: string;
+  email: string;
 
   @ApiProperty({
     description: 'Password for the user',
