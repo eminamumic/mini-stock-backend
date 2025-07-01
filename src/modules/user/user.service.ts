@@ -56,4 +56,34 @@ export class UserService {
   async getUserByUsername(username: string): Promise<User | null> {
     return this.userRepository.findOne({ where: { username } });
   }
+
+  async searchUsers(searchCriteria: SearchUserDto): Promise<User[]> {
+    const whereClause: FindOptionsWhere<User> = {};
+
+    if (searchCriteria.id) {
+      whereClause.id = searchCriteria.id;
+    }
+    if (searchCriteria.username) {
+      whereClause.username = Like(`%${searchCriteria.username}%`);
+    }
+    if (searchCriteria.firstName) {
+      whereClause.firstName = Like(`%${searchCriteria.firstName}%`);
+    }
+    if (searchCriteria.lastName) {
+      whereClause.lastName = Like(`%${searchCriteria.lastName}%`);
+    }
+    if (searchCriteria.email) {
+      whereClause.email = Like(`%${searchCriteria.email}%`);
+    }
+    if (searchCriteria.isActive !== undefined) {
+      whereClause.isActive = searchCriteria.isActive;
+    }
+    if (searchCriteria.userRole) {
+      whereClause.userRole = Like(`%${searchCriteria.userRole}%`);
+    }
+
+    return this.userRepository.find({
+      where: whereClause,
+    });
+  }
 }
