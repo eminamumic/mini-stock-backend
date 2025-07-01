@@ -58,7 +58,7 @@ export class SearchUserDto {
     required: false,
   })
   @IsOptional()
-  @IsBooleanString() // Za boolean query parametre
+  @IsBooleanString()
   isActive?: boolean;
 
   @ApiProperty({
