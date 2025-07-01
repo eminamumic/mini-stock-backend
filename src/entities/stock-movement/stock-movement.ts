@@ -85,7 +85,7 @@ export class StockMovement {
     name: 'reference_document',
     type: 'varchar',
     length: 100,
-    nullable: true,
+    nullable: false,
   })
   referenceDocument: string;
 
