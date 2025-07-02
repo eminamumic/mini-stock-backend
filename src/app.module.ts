@@ -14,9 +14,9 @@ import { Employee } from './entities/employee/employee';
 import { WarehouseAccess } from './entities/warehouse-access/warehouse-access';
 import { Supplier } from './entities/supplier/supplier';
 import { StockMovement } from './entities/stock-movement/stock-movement';
-
 import { LocationModule } from './modules/location/location.module';
 import { CategoryModule } from './modules/category/category.module';
+import { BatchModule } from './modules/batch/batch.module';
 
 @Module({
   imports: [
@@ -46,6 +46,7 @@ import { CategoryModule } from './modules/category/category.module';
     }),
     LocationModule,
     CategoryModule,
+    BatchModule,
   ],
   controllers: [AppController],
   providers: [AppService],
