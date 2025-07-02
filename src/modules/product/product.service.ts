@@ -50,4 +50,15 @@ export class ProductService {
 
     return this.productRepository.save(newProduct);
   }
+
+  async getAllProducts(): Promise<Product[]> {
+    return this.productRepository.find({ relations: ['category', 'batches'] });
+  }
+
+  async getProductById(id: number): Promise<Product | null> {
+    return this.productRepository.findOne({
+      where: { id },
+      relations: ['category', 'batches'],
+    });
+  }
 }
