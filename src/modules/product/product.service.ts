@@ -104,4 +104,55 @@ export class ProductService {
       relations: ['category', 'batches'],
     });
   }
+
+  async updateProduct(
+    id: number,
+    updateProductDto: UpdateProductDto,
+  ): Promise<Product | null> {
+    const productToUpdate = await this.productRepository.findOne({
+      where: { id },
+    });
+
+    if (!productToUpdate) {
+      return null;
+    }
+
+    if (
+      updateProductDto.categoryId &&
+      updateProductDto.categoryId !== productToUpdate.categoryId
+    ) {
+      const categoryExists = await this.categoryRepository.findOne({
+        where: { id: updateProductDto.categoryId },
+      });
+      if (!categoryExists) {
+        throw new NotFoundException(
+          `Category with ID ${updateProductDto.categoryId} not found.`,
+        );
+      }
+    }
+    if (
+      updateProductDto.productCode &&
+      updateProductDto.productCode !== productToUpdate.productCode
+    ) {
+      const existingProductByCode = await this.productRepository.findOne({
+        where: { productCode: updateProductDto.productCode },
+      });
+
+      if (existingProductByCode && existingProductByCode.id !== id) {
+        throw new ConflictException(
+          `Product with code "${updateProductDto.productCode}" already exists.`,
+        );
+      }
+    }
+
+    productToUpdate.lastUpdatedAt = new Date();
+
+    this.productRepository.merge(productToUpdate, updateProductDto);
+    return this.productRepository.save(productToUpdate);
+  }
+
+  async deleteProduct(id: number): Promise<boolean> {
+    const deleteResult = await this.productRepository.delete(id);
+    return deleteResult.affected !== 0;
+  }
 }
