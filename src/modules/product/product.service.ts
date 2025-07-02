@@ -61,4 +61,47 @@ export class ProductService {
       relations: ['category', 'batches'],
     });
   }
+
+  async searchProducts(searchCriteria: SearchProductDto): Promise<Product[]> {
+    const whereClause: FindOptionsWhere<Product> = {};
+
+    if (searchCriteria.id) {
+      whereClause.id = searchCriteria.id;
+    }
+    if (searchCriteria.productCode) {
+      whereClause.productCode = Like(`%${searchCriteria.productCode}%`);
+    }
+    if (searchCriteria.name) {
+      whereClause.name = Like(`%${searchCriteria.name}%`);
+    }
+    if (searchCriteria.categoryId) {
+      whereClause.category = { id: searchCriteria.categoryId };
+    }
+    if (searchCriteria.description) {
+      whereClause.description = Like(`%${searchCriteria.description}%`);
+    }
+    if (searchCriteria.unitOfMeasure) {
+      whereClause.unitOfMeasure = Like(`%${searchCriteria.unitOfMeasure}%`);
+    }
+    if (searchCriteria.minQuantity !== undefined) {
+      whereClause.minQuantity = searchCriteria.minQuantity;
+    }
+    if (searchCriteria.unitWeight !== undefined) {
+      whereClause.unitWeight = searchCriteria.unitWeight;
+    }
+    if (searchCriteria.storageTempMin !== undefined) {
+      whereClause.storageTempMin = searchCriteria.storageTempMin;
+    }
+    if (searchCriteria.storageTempMax !== undefined) {
+      whereClause.storageTempMax = searchCriteria.storageTempMax;
+    }
+    if (searchCriteria.isActive !== undefined) {
+      whereClause.isActive = searchCriteria.isActive;
+    }
+
+    return this.productRepository.find({
+      where: whereClause,
+      relations: ['category', 'batches'],
+    });
+  }
 }
