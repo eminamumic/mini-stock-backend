@@ -20,7 +20,7 @@ export class ProductService {
     private readonly categoryRepository: Repository<Category>,
   ) {}
 
-  async createProduct(createProductDto: CreateProductDto): Promise<Product> {
+  async create(createProductDto: CreateProductDto): Promise<Product> {
     if (createProductDto.categoryId) {
       const categoryExists = await this.categoryRepository.findOne({
         where: { id: createProductDto.categoryId },
@@ -62,7 +62,7 @@ export class ProductService {
     });
   }
 
-  async searchProducts(searchCriteria: SearchProductDto): Promise<Product[]> {
+  async search(searchCriteria: SearchProductDto): Promise<Product[]> {
     const whereClause: FindOptionsWhere<Product> = {};
 
     if (searchCriteria.id) {
@@ -105,7 +105,7 @@ export class ProductService {
     });
   }
 
-  async updateProduct(
+  async update(
     id: number,
     updateProductDto: UpdateProductDto,
   ): Promise<Product | null> {
@@ -151,7 +151,7 @@ export class ProductService {
     return this.productRepository.save(productToUpdate);
   }
 
-  async deleteProduct(id: number): Promise<boolean> {
+  async delete(id: number): Promise<boolean> {
     const deleteResult = await this.productRepository.delete(id);
     return deleteResult.affected !== 0;
   }
