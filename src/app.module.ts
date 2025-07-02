@@ -17,6 +17,7 @@ import { StockMovement } from './entities/stock-movement/stock-movement';
 import { LocationModule } from './modules/location/location.module';
 import { CategoryModule } from './modules/category/category.module';
 import { BatchModule } from './modules/batch/batch.module';
+import { ProductModule } from './modules/product/product.module';
 
 @Module({
   imports: [
@@ -47,6 +48,7 @@ import { BatchModule } from './modules/batch/batch.module';
     LocationModule,
     CategoryModule,
     BatchModule,
+    ProductModule,
   ],
   controllers: [AppController],
   providers: [AppService],
