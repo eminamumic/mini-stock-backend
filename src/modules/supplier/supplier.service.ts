@@ -95,4 +95,57 @@ export class SupplierService {
       relations: ['location'],
     });
   }
+
+  async update(
+    id: number,
+    updateSupplierDto: UpdateSupplierDto,
+  ): Promise<Supplier | null> {
+    const supplierToUpdate = await this.supplierRepository.findOne({
+      where: { id },
+    });
+
+    if (!supplierToUpdate) {
+      return null;
+    }
+
+    if (
+      updateSupplierDto.supplierName &&
+      updateSupplierDto.supplierName !== supplierToUpdate.supplierName
+    ) {
+      const existingSupplierByName = await this.supplierRepository.findOne({
+        where: { supplierName: updateSupplierDto.supplierName },
+      });
+      if (existingSupplierByName && existingSupplierByName.id !== id) {
+        throw new ConflictException(
+          `Dobavljač s imenom '${updateSupplierDto.supplierName}' već postoji.`,
+        );
+      }
+    }
+
+    if (
+      updateSupplierDto.locationId !== undefined &&
+      updateSupplierDto.locationId !== null &&
+      updateSupplierDto.locationId !== supplierToUpdate.locationId
+    ) {
+      const existingLocation = await this.locationRepository.findOne({
+        where: { id: updateSupplierDto.locationId },
+      });
+      if (!existingLocation) {
+        throw new BadRequestException(
+          `Lokacija s ID-em ${updateSupplierDto.locationId} nije pronađena.`,
+        );
+      }
+    }
+
+    this.supplierRepository.merge(supplierToUpdate, {
+      ...updateSupplierDto,
+    });
+
+    return this.supplierRepository.save(supplierToUpdate);
+  }
+
+  async delete(id: number): Promise<boolean> {
+    const deleteResult = await this.supplierRepository.delete(id);
+    return deleteResult.affected !== 0;
+  }
 }
