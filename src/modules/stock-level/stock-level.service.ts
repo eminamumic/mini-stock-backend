@@ -60,4 +60,17 @@ export class StockLevelService {
 
     return this.stockLevelRepository.save(newStockLevel);
   }
+
+  async getAllStockLevels(): Promise<StockLevel[]> {
+    return this.stockLevelRepository.find({
+      relations: ['product', 'warehouse'],
+    });
+  }
+
+  async getStockLevelById(id: number): Promise<StockLevel | null> {
+    return this.stockLevelRepository.findOne({
+      where: { id },
+      relations: ['product', 'warehouse'],
+    });
+  }
 }
