@@ -43,4 +43,38 @@ export class EmployeeService {
   async getEmployeeById(id: number): Promise<Employee | null> {
     return this.employeeRepository.findOne({ where: { id } });
   }
+
+  async search(searchCriteria: SearchEmployeeDto): Promise<Employee[]> {
+    const whereClause: FindOptionsWhere<Employee> = {};
+
+    if (searchCriteria.id) {
+      whereClause.id = parseInt(searchCriteria.id, 10);
+    }
+    if (searchCriteria.userId) {
+      whereClause.userId = parseInt(searchCriteria.userId, 10);
+    }
+    if (searchCriteria.firstName) {
+      whereClause.firstName = Like(`%${searchCriteria.firstName}%`);
+    }
+    if (searchCriteria.lastName) {
+      whereClause.lastName = Like(`%${searchCriteria.lastName}%`);
+    }
+    if (searchCriteria.position) {
+      whereClause.position = Like(`%${searchCriteria.position}%`);
+    }
+    if (searchCriteria.employmentDate) {
+      whereClause.employmentDate = new Date(searchCriteria.employmentDate);
+    }
+    if (searchCriteria.contactPhone) {
+      whereClause.contactPhone = Like(`%${searchCriteria.contactPhone}%`);
+    }
+    if (searchCriteria.isActive !== undefined) {
+      whereClause.isActive =
+        String(searchCriteria.isActive).toLowerCase() === 'true';
+    }
+
+    return this.employeeRepository.find({
+      where: whereClause,
+    });
+  }
 }
