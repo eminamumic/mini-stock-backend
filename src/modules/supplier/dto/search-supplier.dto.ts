@@ -14,7 +14,7 @@ export class SearchSupplierDto {
   })
   @IsOptional()
   @IsNumberString()
-  id?: number;
+  id?: string;
 
   @ApiProperty({
     description: 'Supplier name for searching',
@@ -32,7 +32,7 @@ export class SearchSupplierDto {
   })
   @IsOptional()
   @IsNumberString()
-  locationId?: number;
+  locationId?: string;
 
   @ApiProperty({
     description: 'Contact person for searching ',
