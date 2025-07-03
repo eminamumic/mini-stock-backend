@@ -35,4 +35,12 @@ export class EmployeeService {
 
     return this.employeeRepository.save(newEmployee);
   }
+
+  async getAllEmployees(): Promise<Employee[]> {
+    return this.employeeRepository.find();
+  }
+
+  async getEmployeeById(id: number): Promise<Employee | null> {
+    return this.employeeRepository.findOne({ where: { id } });
+  }
 }
