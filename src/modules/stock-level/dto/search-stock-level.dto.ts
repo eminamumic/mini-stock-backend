@@ -9,7 +9,7 @@ export class SearchStockLevelDto {
   })
   @IsOptional()
   @IsNumberString()
-  id?: number;
+  id?: string;
 
   @ApiProperty({
     description: 'The ID of the product for searching',
@@ -18,7 +18,7 @@ export class SearchStockLevelDto {
   })
   @IsOptional()
   @IsNumberString()
-  productId?: number;
+  productId?: string;
 
   @ApiProperty({
     description: 'The ID of the warehouse for searching',
@@ -27,7 +27,7 @@ export class SearchStockLevelDto {
   })
   @IsOptional()
   @IsNumberString()
-  warehouseId?: number;
+  warehouseId?: string;
 
   @ApiProperty({
     description: 'Current quantity for searching',
@@ -36,7 +36,7 @@ export class SearchStockLevelDto {
   })
   @IsOptional()
   @IsNumberString()
-  currentQuantity?: number;
+  currentQuantity?: string;
 
   @ApiProperty({
     description: 'Reorder level for searching ',
@@ -45,7 +45,7 @@ export class SearchStockLevelDto {
   })
   @IsOptional()
   @IsNumberString()
-  reorderLevel?: number;
+  reorderLevel?: string;
 
   @ApiProperty({
     description: 'Reorder quantity for searching ',
@@ -54,7 +54,7 @@ export class SearchStockLevelDto {
   })
   @IsOptional()
   @IsNumberString()
-  reorderQuantity?: number;
+  reorderQuantity?: string;
 
   @ApiProperty({
     description: 'Last stock take date for searching (YYYY-MM-DD format).',
