@@ -15,7 +15,7 @@ export class SearchEmployeeDto {
   })
   @IsOptional()
   @IsNumberString()
-  id?: number;
+  id?: string;
 
   @ApiProperty({
     description: 'The ID of the associated user account for searching',
@@ -24,7 +24,7 @@ export class SearchEmployeeDto {
   })
   @IsOptional()
   @IsNumberString()
-  userId?: number;
+  userId?: string;
 
   @ApiProperty({
     description: 'First name for searching',
