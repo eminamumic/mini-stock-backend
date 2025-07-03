@@ -18,6 +18,7 @@ import { LocationModule } from './modules/location/location.module';
 import { CategoryModule } from './modules/category/category.module';
 import { BatchModule } from './modules/batch/batch.module';
 import { ProductModule } from './modules/product/product.module';
+import { UserModule } from './modules/user/user.module';
 
 @Module({
   imports: [
@@ -49,6 +50,7 @@ import { ProductModule } from './modules/product/product.module';
     CategoryModule,
     BatchModule,
     ProductModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],
