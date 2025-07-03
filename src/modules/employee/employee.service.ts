@@ -77,4 +77,43 @@ export class EmployeeService {
       where: whereClause,
     });
   }
+
+  async update(
+    id: number,
+    updateEmployeeDto: UpdateEmployeeDto,
+  ): Promise<Employee | null> {
+    const employeeToUpdate = await this.employeeRepository.findOne({
+      where: { id },
+    });
+
+    if (!employeeToUpdate) {
+      return null;
+    }
+
+    if (
+      updateEmployeeDto.userId !== undefined &&
+      updateEmployeeDto.userId !== null &&
+      updateEmployeeDto.userId !== employeeToUpdate.userId
+    ) {
+      const existingUser = await this.userRepository.findOne({
+        where: { id: updateEmployeeDto.userId },
+      });
+      if (!existingUser) {
+        throw new BadRequestException(
+          `User with ID ${updateEmployeeDto.userId} not found. Cannot associate employee.`,
+        );
+      }
+    }
+
+    this.employeeRepository.merge(employeeToUpdate, {
+      ...updateEmployeeDto,
+    });
+
+    return this.employeeRepository.save(employeeToUpdate);
+  }
+
+  async delete(id: number): Promise<boolean> {
+    const deleteResult = await this.employeeRepository.delete(id);
+    return deleteResult.affected !== 0;
+  }
 }
