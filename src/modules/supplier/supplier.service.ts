@@ -58,4 +58,41 @@ export class SupplierService {
       relations: ['location'],
     });
   }
+
+  async search(searchCriteria: SearchSupplierDto): Promise<Supplier[]> {
+    const whereClause: FindOptionsWhere<Supplier> = {};
+
+    if (searchCriteria.id) {
+      whereClause.id = parseInt(searchCriteria.id, 10);
+    }
+    if (searchCriteria.supplierName) {
+      whereClause.supplierName = Like(`%${searchCriteria.supplierName}%`);
+    }
+    if (searchCriteria.locationId) {
+      whereClause.locationId = parseInt(searchCriteria.locationId, 10);
+    }
+    if (searchCriteria.contactPerson) {
+      whereClause.contactPerson = Like(`%${searchCriteria.contactPerson}%`);
+    }
+    if (searchCriteria.phone) {
+      whereClause.phone = Like(`%${searchCriteria.phone}%`);
+    }
+    if (searchCriteria.email) {
+      whereClause.email = Like(`%${searchCriteria.email}%`);
+    }
+    if (searchCriteria.jib) {
+      whereClause.jib = Like(`%${searchCriteria.jib}%`);
+    }
+    if (searchCriteria.pdvNumber) {
+      whereClause.pdvNumber = Like(`%${searchCriteria.pdvNumber}%`);
+    }
+    if (searchCriteria.note) {
+      whereClause.note = Like(`%${searchCriteria.note}%`);
+    }
+
+    return this.supplierRepository.find({
+      where: whereClause,
+      relations: ['location'],
+    });
+  }
 }
