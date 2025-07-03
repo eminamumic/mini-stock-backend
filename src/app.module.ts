@@ -20,6 +20,7 @@ import { BatchModule } from './modules/batch/batch.module';
 import { ProductModule } from './modules/product/product.module';
 import { UserModule } from './modules/user/user.module';
 import { EmployeeModule } from './modules/employee/employee.module';
+import { StockLevelModule } from './modules/stock-level/stock-level.module';
 
 @Module({
   imports: [
@@ -53,6 +54,7 @@ import { EmployeeModule } from './modules/employee/employee.module';
     ProductModule,
     UserModule,
     EmployeeModule,
+    StockLevelModule,
   ],
   controllers: [AppController],
   providers: [AppService],
