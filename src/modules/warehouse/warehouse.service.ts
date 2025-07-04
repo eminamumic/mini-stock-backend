@@ -106,4 +106,72 @@ export class WarehouseService {
       relations: ['location', 'warehouseType'],
     });
   }
+
+  async update(
+    id: number,
+    updateWarehouseDto: UpdateWarehouseDto,
+  ): Promise<Warehouse | null> {
+    const warehouseToUpdate = await this.warehouseRepository.findOne({
+      where: { id },
+    });
+
+    if (!warehouseToUpdate) {
+      return null;
+    }
+
+    if (
+      updateWarehouseDto.name &&
+      updateWarehouseDto.name !== warehouseToUpdate.name
+    ) {
+      const existingWarehouseByName = await this.warehouseRepository.findOne({
+        where: { name: updateWarehouseDto.name },
+      });
+      if (existingWarehouseByName && existingWarehouseByName.id !== id) {
+        throw new ConflictException(
+          `Skladište s imenom '${updateWarehouseDto.name}' već postoji.`,
+        );
+      }
+    }
+
+    if (
+      updateWarehouseDto.locationId !== undefined &&
+      updateWarehouseDto.locationId !== null &&
+      updateWarehouseDto.locationId !== warehouseToUpdate.locationId
+    ) {
+      const existingLocation = await this.locationRepository.findOne({
+        where: { id: updateWarehouseDto.locationId },
+      });
+      if (!existingLocation) {
+        throw new BadRequestException(
+          `Lokacija s ID-em ${updateWarehouseDto.locationId} nije pronađena.`,
+        );
+      }
+    }
+
+    if (
+      updateWarehouseDto.warehouseTypeId !== undefined &&
+      updateWarehouseDto.warehouseTypeId !== null &&
+      updateWarehouseDto.warehouseTypeId !== warehouseToUpdate.warehouseTypeId
+    ) {
+      const existingWarehouseType = await this.warehouseTypeRepository.findOne({
+        where: { id: updateWarehouseDto.warehouseTypeId },
+      });
+      if (!existingWarehouseType) {
+        throw new BadRequestException(
+          `Tip skladišta s ID-em ${updateWarehouseDto.warehouseTypeId} nije pronađen.`,
+        );
+      }
+    }
+
+    this.warehouseRepository.merge(warehouseToUpdate, {
+      ...updateWarehouseDto,
+    });
+
+    return this.warehouseRepository.save(warehouseToUpdate);
+  }
+
+  async delete(id: number): Promise<boolean> {
+    const deleteResult = await this.warehouseRepository.delete(id);
+    return deleteResult.affected !== 0;
+  }
 }
