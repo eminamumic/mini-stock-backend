@@ -61,4 +61,17 @@ export class WarehouseService {
 
     return this.warehouseRepository.save(newWarehouse);
   }
+
+  async getAllWarehouses(): Promise<Warehouse[]> {
+    return this.warehouseRepository.find({
+      relations: ['location', 'warehouseType'],
+    });
+  }
+
+  async getWarehouseById(id: number): Promise<Warehouse | null> {
+    return this.warehouseRepository.findOne({
+      where: { id },
+      relations: ['location', 'warehouseType'],
+    });
+  }
 }
