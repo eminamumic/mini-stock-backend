@@ -15,7 +15,7 @@ export class SearchWarehouseDto {
   })
   @IsOptional()
   @IsNumberString()
-  id?: number;
+  id?: string;
 
   @ApiProperty({
     description: 'Name of the warehouse for searching ',
@@ -33,7 +33,7 @@ export class SearchWarehouseDto {
   })
   @IsOptional()
   @IsNumberString()
-  locationId?: number;
+  locationId?: string;
 
   @ApiProperty({
     description: 'Warehouse Type ID for searching',
@@ -42,7 +42,7 @@ export class SearchWarehouseDto {
   })
   @IsOptional()
   @IsNumberString()
-  warehouseTypeId?: number;
+  warehouseTypeId?: string;
 
   @ApiProperty({
     description: 'Creation date for searching (YYYY-MM-DD format).',
