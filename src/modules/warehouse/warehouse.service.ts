@@ -74,4 +74,36 @@ export class WarehouseService {
       relations: ['location', 'warehouseType'],
     });
   }
+
+  async search(searchCriteria: SearchWarehouseDto): Promise<Warehouse[]> {
+    const whereClause: FindOptionsWhere<Warehouse> = {};
+
+    if (searchCriteria.id) {
+      whereClause.id = parseInt(searchCriteria.id, 10);
+    }
+    if (searchCriteria.name) {
+      whereClause.name = Like(`%${searchCriteria.name}%`);
+    }
+    if (searchCriteria.locationId) {
+      whereClause.locationId = parseInt(searchCriteria.locationId, 10);
+    }
+    if (searchCriteria.warehouseTypeId) {
+      whereClause.warehouseTypeId = parseInt(
+        searchCriteria.warehouseTypeId,
+        10,
+      );
+    }
+    if (searchCriteria.createdAt) {
+      whereClause.createdAt = new Date(searchCriteria.createdAt);
+    }
+    if (searchCriteria.isActive !== undefined) {
+      whereClause.isActive =
+        String(searchCriteria.isActive).toLowerCase() === 'true';
+    }
+
+    return this.warehouseRepository.find({
+      where: whereClause,
+      relations: ['location', 'warehouseType'],
+    });
+  }
 }
