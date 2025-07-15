@@ -177,4 +177,9 @@ export class WarehouseAccessService {
 
     return this.warehouseAccessRepository.save(warehouseAccessToUpdate);
   }
+
+  async delete(id: number): Promise<boolean> {
+    const deleteResult = await this.warehouseAccessRepository.delete(id);
+    return deleteResult.affected !== 0;
+  }
 }
