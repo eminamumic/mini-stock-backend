@@ -22,6 +22,7 @@ import { UserModule } from './modules/user/user.module';
 import { EmployeeModule } from './modules/employee/employee.module';
 import { StockLevelModule } from './modules/stock-level/stock-level.module';
 import { SupplierModule } from './modules/supplier/supplier.module';
+import { WarehouseModule } from './modules/warehouse/warehouse.module';
 
 @Module({
   imports: [
@@ -57,6 +58,7 @@ import { SupplierModule } from './modules/supplier/supplier.module';
     EmployeeModule,
     StockLevelModule,
     SupplierModule,
+    WarehouseModule,
   ],
   controllers: [AppController],
   providers: [AppService],
