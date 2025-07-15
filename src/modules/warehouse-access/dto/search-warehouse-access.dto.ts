@@ -14,7 +14,7 @@ export class SearchWarehouseAccessDto {
   })
   @IsOptional()
   @IsNumberString()
-  id?: number;
+  id?: string;
 
   @ApiProperty({
     description: 'Employee ID for searching',
@@ -23,7 +23,7 @@ export class SearchWarehouseAccessDto {
   })
   @IsOptional()
   @IsNumberString()
-  employeeId?: number;
+  employeeId?: string;
 
   @ApiProperty({
     description: 'Warehouse ID for searching',
@@ -32,7 +32,7 @@ export class SearchWarehouseAccessDto {
   })
   @IsOptional()
   @IsNumberString()
-  warehouseId?: number;
+  warehouseId?: string;
 
   @ApiProperty({
     description: 'Is the access active for searching (true/false)',
