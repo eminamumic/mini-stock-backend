@@ -75,4 +75,28 @@ export class WarehouseAccessService {
       relations: ['employee', 'warehouse'],
     });
   }
+
+  async search(
+    searchCriteria: SearchWarehouseAccessDto,
+  ): Promise<WarehouseAccess[]> {
+    const whereClause: FindOptionsWhere<WarehouseAccess> = {};
+
+    if (searchCriteria.id) {
+      whereClause.id = parseInt(searchCriteria.id, 10);
+    }
+    if (searchCriteria.employeeId) {
+      whereClause.employeeId = parseInt(searchCriteria.employeeId, 10);
+    }
+    if (searchCriteria.warehouseId) {
+      whereClause.warehouseId = parseInt(searchCriteria.warehouseId, 10);
+    }
+    if (searchCriteria.revocationDate) {
+      whereClause.revocationDate = new Date(searchCriteria.revocationDate);
+    }
+
+    return this.warehouseAccessRepository.find({
+      where: whereClause,
+      relations: ['employee', 'warehouse'],
+    });
+  }
 }
