@@ -29,4 +29,34 @@ export class WarehouseTypeService {
   async getWarehouseTypeById(id: number): Promise<WarehouseType | null> {
     return this.warehouseTypeRepository.findOne({ where: { id } });
   }
+
+  async search(
+    searchCriteria: SearchWarehouseTypeDto,
+  ): Promise<WarehouseType[]> {
+    const whereClause: FindOptionsWhere<WarehouseType> = {};
+
+    if (searchCriteria.id) {
+      whereClause.id = parseInt(searchCriteria.id, 10);
+    }
+    if (searchCriteria.typeName) {
+      whereClause.typeName = Like(`%${searchCriteria.typeName}%`);
+    }
+    if (searchCriteria.description) {
+      whereClause.description = Like(`%${searchCriteria.description}%`);
+    }
+    if (searchCriteria.requiresTempControl !== undefined) {
+      whereClause.requiresTempControl =
+        String(searchCriteria.requiresTempControl).toLowerCase() === 'true';
+    }
+    if (searchCriteria.minTemperatureC) {
+      whereClause.minTemperatureC = parseFloat(searchCriteria.minTemperatureC);
+    }
+    if (searchCriteria.maxTemperatureC) {
+      whereClause.maxTemperatureC = parseFloat(searchCriteria.maxTemperatureC);
+    }
+
+    return this.warehouseTypeRepository.find({
+      where: whereClause,
+    });
+  }
 }
