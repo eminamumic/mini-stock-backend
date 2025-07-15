@@ -62,4 +62,17 @@ export class WarehouseAccessService {
 
     return this.warehouseAccessRepository.save(newWarehouseAccess);
   }
+
+  async getAllWarehouseAccess(): Promise<WarehouseAccess[]> {
+    return this.warehouseAccessRepository.find({
+      relations: ['employee', 'warehouse'],
+    });
+  }
+
+  async getWarehouseAccessById(id: number): Promise<WarehouseAccess | null> {
+    return this.warehouseAccessRepository.findOne({
+      where: { id },
+      relations: ['employee', 'warehouse'],
+    });
+  }
 }
