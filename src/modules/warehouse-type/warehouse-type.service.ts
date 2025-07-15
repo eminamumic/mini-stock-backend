@@ -59,4 +59,42 @@ export class WarehouseTypeService {
       where: whereClause,
     });
   }
+
+  async update(
+    id: number,
+    updateWarehouseTypeDto: UpdateWarehouseTypeDto,
+  ): Promise<WarehouseType | null> {
+    const warehouseTypeToUpdate = await this.warehouseTypeRepository.findOne({
+      where: { id },
+    });
+
+    if (!warehouseTypeToUpdate) {
+      return null;
+    }
+
+    if (
+      updateWarehouseTypeDto.typeName &&
+      updateWarehouseTypeDto.typeName !== warehouseTypeToUpdate.typeName
+    ) {
+      const existingTypeByName = await this.warehouseTypeRepository.findOne({
+        where: { typeName: updateWarehouseTypeDto.typeName },
+      });
+      if (existingTypeByName && existingTypeByName.id !== id) {
+        throw new ConflictException(
+          `Warehouse type with name '${updateWarehouseTypeDto.typeName}' already exists.`,
+        );
+      }
+    }
+
+    this.warehouseTypeRepository.merge(warehouseTypeToUpdate, {
+      ...updateWarehouseTypeDto,
+    });
+
+    return this.warehouseTypeRepository.save(warehouseTypeToUpdate);
+  }
+
+  async delete(id: number): Promise<boolean> {
+    const deleteResult = await this.warehouseTypeRepository.delete(id);
+    return deleteResult.affected !== 0;
+  }
 }
