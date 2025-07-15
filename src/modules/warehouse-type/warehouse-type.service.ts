@@ -21,4 +21,12 @@ export class WarehouseTypeService {
     });
     return this.warehouseTypeRepository.save(newWarehouseType);
   }
+
+  async getAllWarehouseTypes(): Promise<WarehouseType[]> {
+    return this.warehouseTypeRepository.find();
+  }
+
+  async getWarehouseTypeById(id: number): Promise<WarehouseType | null> {
+    return this.warehouseTypeRepository.findOne({ where: { id } });
+  }
 }
