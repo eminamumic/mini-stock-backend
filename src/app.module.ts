@@ -23,6 +23,7 @@ import { EmployeeModule } from './modules/employee/employee.module';
 import { StockLevelModule } from './modules/stock-level/stock-level.module';
 import { SupplierModule } from './modules/supplier/supplier.module';
 import { WarehouseModule } from './modules/warehouse/warehouse.module';
+import { WarehouseAccessModule } from './modules/warehouse-access/warehouse-access.module';
 
 @Module({
   imports: [
@@ -59,6 +60,7 @@ import { WarehouseModule } from './modules/warehouse/warehouse.module';
     StockLevelModule,
     SupplierModule,
     WarehouseModule,
+    WarehouseAccessModule,
   ],
   controllers: [AppController],
   providers: [AppService],
