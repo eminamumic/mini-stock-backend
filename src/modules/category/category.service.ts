@@ -86,4 +86,19 @@ export class CategoryService {
 
     return deleteResult.affected !== 0;
   }
+
+  async getDistinctParentCategories(): Promise<number[]> {
+    const categories = await this.categoryRepository.find({
+      select: ['parentCategoryId'],
+    });
+    const parentCategoryIds = new Set(
+      categories.map((category) => category.parentCategoryId),
+    );
+
+    const filteredIds = Array.from(parentCategoryIds).filter(
+      (id) => id !== null,
+    );
+
+    return filteredIds;
+  }
 }
