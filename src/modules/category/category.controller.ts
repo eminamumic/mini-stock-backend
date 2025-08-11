@@ -46,19 +46,19 @@ export class CategoryController {
     return this.categoryService.searchCategories(searchDto);
   }
 
-  @Get('distinct-parent-categories')
+  @Get('parentCategories')
   @HttpCode(HttpStatus.OK)
   async getDistinctParentCategories(): Promise<number[]> {
     return this.categoryService.getDistinctParentCategories();
   }
 
-  @Get('distinct-hierarchy-levels')
+  @Get('hierarchyLevels')
   @HttpCode(HttpStatus.OK)
   async getDistinctHierarchyLevels(): Promise<number[]> {
     return this.categoryService.getDistinctHierarchyLevels();
   }
 
-  @Get('distinct-category-types')
+  @Get('categoryTypes')
   @HttpCode(HttpStatus.OK)
   async getDistinctCategoryTypes(): Promise<string[]> {
     return this.categoryService.getDistinctCategoryTypes();
