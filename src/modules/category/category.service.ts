@@ -111,4 +111,19 @@ export class CategoryService {
     );
     return Array.from(hierarchyLevels);
   }
+
+  async getDistinctCategoryTypes(): Promise<string[]> {
+    const categories = await this.categoryRepository.find({
+      select: ['categoryType'],
+    });
+    const categoryTypes = new Set(
+      categories.map((category) => category.categoryType),
+    );
+
+    const filteredTypes = Array.from(categoryTypes).filter(
+      (type) => type !== null,
+    );
+
+    return filteredTypes;
+  }
 }
