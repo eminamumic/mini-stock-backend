@@ -44,6 +44,24 @@ export class EmployeeController {
     return this.employeeService.getAllEmployees();
   }
 
+  @Get('Positions')
+  @HttpCode(HttpStatus.OK)
+  async getDistinctPositions(): Promise<string[]> {
+    return this.employeeService.getDistinctPositions();
+  }
+
+  @Get('employmentDates')
+  @HttpCode(HttpStatus.OK)
+  async getDistinctEmploymentDates(): Promise<Date[]> {
+    return this.employeeService.getDistinctEmploymentDates();
+  }
+
+  @Get('activStatuses')
+  @HttpCode(HttpStatus.OK)
+  async getDistinctActiveStatuses(): Promise<boolean[]> {
+    return this.employeeService.getDistinctActiveStatuses();
+  }
+
   @Get(':id')
   @HttpCode(HttpStatus.OK)
   async getEmployeeById(
