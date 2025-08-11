@@ -96,4 +96,10 @@ export class LocationService {
     const cities = new Set(locations.map((location) => location.city));
     return Array.from(cities);
   }
+
+  async getDistinctStates(): Promise<string[]> {
+    const locations = await this.locationRepository.find({ select: ['state'] });
+    const states = new Set(locations.map((location) => location.state));
+    return Array.from(states);
+  }
 }
