@@ -50,12 +50,21 @@ export class CategoryService {
     if (searchCriteria.description) {
       whereClause.description = Like(`%${searchCriteria.description}%`);
     }
+    if (searchCriteria.parentCategoryId) {
+      whereClause.parentCategory = { id: searchCriteria.parentCategoryId };
+    }
+    if (searchCriteria.hierarchyLevel) {
+      whereClause.hierarchyLevel = searchCriteria.hierarchyLevel;
+    }
+    if (searchCriteria.categoryType) {
+      whereClause.categoryType = Like(`%${searchCriteria.categoryType}%`);
+    }
 
     return this.categoryRepository.find({
       where: whereClause,
+      relations: ['children', 'parentCategory'],
     });
   }
-
   async updateCategory(
     id: number,
     updateCategoryDto: UpdateCategoryDto,
