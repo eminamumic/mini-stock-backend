@@ -44,6 +44,34 @@ export class EmployeeService {
     return this.employeeRepository.findOne({ where: { id } });
   }
 
+  async getDistinctPositions(): Promise<string[]> {
+    const employees = await this.employeeRepository.find({
+      select: ['position'],
+    });
+    const positions = new Set(employees.map((employee) => employee.position));
+
+    const filteredPositions = Array.from(positions).filter(
+      (pos) => pos !== null,
+    );
+    return filteredPositions;
+  }
+
+  async getDistinctEmploymentDates(): Promise<Date[]> {
+    const employees = await this.employeeRepository.find({
+      select: ['employmentDate'],
+    });
+    const dates = new Set(employees.map((employee) => employee.employmentDate));
+    return Array.from(dates);
+  }
+
+  async getDistinctActiveStatuses(): Promise<boolean[]> {
+    const employees = await this.employeeRepository.find({
+      select: ['isActive'],
+    });
+    const statuses = new Set(employees.map((employee) => employee.isActive));
+    return Array.from(statuses);
+  }
+
   async search(searchCriteria: SearchEmployeeDto): Promise<Employee[]> {
     const whereClause: FindOptionsWhere<Employee> = {};
 
