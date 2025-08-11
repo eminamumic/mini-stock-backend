@@ -24,11 +24,16 @@ export class CategoryService {
   }
 
   async getAllCategories(): Promise<Category[]> {
-    return this.categoryRepository.find();
+    return this.categoryRepository.find({
+      relations: ['children', 'parentCategory'],
+    });
   }
 
   async getCategoryById(id: number): Promise<Category | null> {
-    return this.categoryRepository.findOne({ where: { id } });
+    return this.categoryRepository.findOne({
+      where: { id },
+      relations: ['children', 'parentCategory'],
+    });
   }
 
   async searchCategories(
