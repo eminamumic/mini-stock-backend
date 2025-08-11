@@ -81,6 +81,12 @@ export class LocationController {
     return location;
   }
 
+  @Get('cities')
+  @HttpCode(HttpStatus.OK)
+  async getCities(): Promise<string[]> {
+    return this.locationService.getDistinctCities();
+  }
+
   @Put(':id')
   @HttpCode(HttpStatus.OK)
   @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
