@@ -101,4 +101,14 @@ export class CategoryService {
 
     return filteredIds;
   }
+
+  async getDistinctHierarchyLevels(): Promise<number[]> {
+    const categories = await this.categoryRepository.find({
+      select: ['hierarchyLevel'],
+    });
+    const hierarchyLevels = new Set(
+      categories.map((category) => category.hierarchyLevel),
+    );
+    return Array.from(hierarchyLevels);
+  }
 }
