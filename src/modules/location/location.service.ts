@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, FindOptionsWhere, Like } from 'typeorm';
 import { Location } from 'src/entities/location/location';
+import { SearchLocationDto } from './dto/search-location.dto';
 
 @Injectable()
 export class LocationService {
@@ -37,30 +38,23 @@ export class LocationService {
     });
   }
 
-  async searchLocation(searchCriteria: {
-    id?: number;
-    address?: string;
-    city?: string;
-    state?: string;
-    zipCode?: string;
-    note?: string;
-  }): Promise<Location[]> {
+  async searchLocation(searchCriteria: SearchLocationDto): Promise<Location[]> {
     const whereClause: FindOptionsWhere<Location> = {};
 
     if (searchCriteria.id) {
       whereClause.id = searchCriteria.id;
     }
+    if (searchCriteria.address) {
+      whereClause.address = Like(`%${searchCriteria.address}%`);
+    }
     if (searchCriteria.city) {
-      whereClause.city = searchCriteria.city;
+      whereClause.city = Like(`%${searchCriteria.city}%`);
     }
     if (searchCriteria.state) {
-      whereClause.state = searchCriteria.state;
+      whereClause.state = Like(`%${searchCriteria.state}%`);
     }
     if (searchCriteria.zipCode) {
       whereClause.zipCode = searchCriteria.zipCode;
-    }
-    if (searchCriteria.address) {
-      whereClause.address = Like(`%${searchCriteria.address}%`);
     }
     if (searchCriteria.note) {
       whereClause.note = Like(`%${searchCriteria.note}%`);
@@ -68,6 +62,7 @@ export class LocationService {
 
     return this.locationRepository.find({
       where: whereClause,
+      relations: ['warehouse'],
     });
   }
 
@@ -94,5 +89,11 @@ export class LocationService {
     const deleteResult = await this.locationRepository.delete(id);
 
     return deleteResult.affected !== 0;
+  }
+
+  async getDistinctCities(): Promise<string[]> {
+    const locations = await this.locationRepository.find({ select: ['city'] });
+    const cities = new Set(locations.map((location) => location.city));
+    return Array.from(cities);
   }
 }
