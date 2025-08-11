@@ -59,6 +59,23 @@ export class LocationController {
     return locations;
   }
 
+  @Get('cities')
+  @HttpCode(HttpStatus.OK)
+  async getCities(): Promise<string[]> {
+    return this.locationService.getDistinctCities();
+  }
+
+  @Get('states')
+  @HttpCode(HttpStatus.OK)
+  async getStates(): Promise<string[]> {
+    return this.locationService.getDistinctStates();
+  }
+
+  @Get('zipcodes')
+  @HttpCode(HttpStatus.OK)
+  async getZipCodes(): Promise<string[]> {
+    return this.locationService.getDistinctZipCodes();
+  }
   @Get(':id')
   @HttpCode(HttpStatus.OK)
   async findOne(@Param('id') id: number): Promise<Location> {
@@ -79,24 +96,6 @@ export class LocationController {
       );
     }
     return location;
-  }
-
-  @Get('cities')
-  @HttpCode(HttpStatus.OK)
-  async getCities(): Promise<string[]> {
-    return this.locationService.getDistinctCities();
-  }
-
-  @Get('states')
-  @HttpCode(HttpStatus.OK)
-  async getStates(): Promise<string[]> {
-    return this.locationService.getDistinctStates();
-  }
-
-  @Get('zipcodes')
-  @HttpCode(HttpStatus.OK)
-  async getZipCodes(): Promise<string[]> {
-    return this.locationService.getDistinctZipCodes();
   }
 
   @Put(':id')
