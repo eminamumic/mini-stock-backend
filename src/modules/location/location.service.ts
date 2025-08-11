@@ -102,4 +102,12 @@ export class LocationService {
     const states = new Set(locations.map((location) => location.state));
     return Array.from(states);
   }
+
+  async getDistinctZipCodes(): Promise<string[]> {
+    const locations = await this.locationRepository.find({
+      select: ['zipCode'],
+    });
+    const zipCodes = new Set(locations.map((location) => location.zipCode));
+    return Array.from(zipCodes);
+  }
 }
