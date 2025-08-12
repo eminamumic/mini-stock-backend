@@ -63,7 +63,7 @@ export class SearchUserDto {
 
   @ApiProperty({
     description: 'User role for searching',
-    example: 'employee',
+    example: 'admin',
     required: false,
   })
   @IsOptional()
@@ -71,11 +71,11 @@ export class SearchUserDto {
   userRole?: string;
 
   @ApiProperty({
-    description: 'Date for searching',
-    example: '12-03-2025',
+    description: 'Users created after this date (ISO 8601 format)',
+    example: '2023-01-01T00:00:00Z',
     required: false,
   })
   @IsOptional()
   @IsString()
-  createdAfter?: string;
+  createdAtAfter?: string;
 }
