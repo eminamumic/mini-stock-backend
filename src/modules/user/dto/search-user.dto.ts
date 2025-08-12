@@ -69,4 +69,13 @@ export class SearchUserDto {
   @IsOptional()
   @IsString()
   userRole?: string;
+
+  @ApiProperty({
+    description: 'Date for searching',
+    example: '12-03-2025',
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  createdAfter?: string;
 }
