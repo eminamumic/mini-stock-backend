@@ -57,6 +57,18 @@ export class UserService {
     return this.userRepository.findOne({ where: { username } });
   }
 
+  async getDistinctUserRoles(): Promise<string[]> {
+    const users = await this.userRepository.find({ select: ['userRole'] });
+    const roles = new Set(users.map((user) => user.userRole));
+    return Array.from(roles);
+  }
+
+  async getDistinctActiveStatuses(): Promise<boolean[]> {
+    const users = await this.userRepository.find({ select: ['isActive'] });
+    const statuses = new Set(users.map((user) => user.isActive));
+    return Array.from(statuses);
+  }
+
   async search(searchCriteria: SearchUserDto): Promise<User[]> {
     const whereClause: FindOptionsWhere<User> = {};
 
@@ -76,7 +88,8 @@ export class UserService {
       whereClause.email = Like(`%${searchCriteria.email}%`);
     }
     if (searchCriteria.isActive !== undefined) {
-      whereClause.isActive = searchCriteria.isActive;
+      whereClause.isActive =
+        String(searchCriteria.isActive).toLowerCase() === 'true';
     }
     if (searchCriteria.userRole) {
       whereClause.userRole = Like(`%${searchCriteria.userRole}%`);
@@ -84,6 +97,7 @@ export class UserService {
 
     return this.userRepository.find({
       where: whereClause,
+      relations: ['employee'],
     });
   }
 
