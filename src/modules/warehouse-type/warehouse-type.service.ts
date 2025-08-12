@@ -30,6 +30,16 @@ export class WarehouseTypeService {
     return this.warehouseTypeRepository.findOne({ where: { id } });
   }
 
+  async getDistinctRequiresTempControlStatuses(): Promise<boolean[]> {
+    const warehouseTypes = await this.warehouseTypeRepository.find({
+      select: ['requiresTempControl'],
+    });
+    const statuses = new Set(
+      warehouseTypes.map((type) => type.requiresTempControl),
+    );
+    return Array.from(statuses);
+  }
+
   async search(
     searchCriteria: SearchWarehouseTypeDto,
   ): Promise<WarehouseType[]> {
