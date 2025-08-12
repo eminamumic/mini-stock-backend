@@ -42,6 +42,18 @@ export class UserController {
     return this.userService.getAllUsers();
   }
 
+  @Get('roles')
+  @HttpCode(HttpStatus.OK)
+  async getDistinctRoles(): Promise<string[]> {
+    return this.userService.getDistinctUserRoles();
+  }
+
+  @Get('active-statuses')
+  @HttpCode(HttpStatus.OK)
+  async getDistinctActiveStatuses(): Promise<boolean[]> {
+    return this.userService.getDistinctActiveStatuses();
+  }
+
   @Get(':id')
   @HttpCode(HttpStatus.OK)
   async getUserById(@Param('id', ParseIntPipe) id: number): Promise<User> {
