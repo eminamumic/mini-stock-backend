@@ -44,6 +44,12 @@ export class WarehouseTypeController {
     return this.warehouseTypeService.getAllWarehouseTypes();
   }
 
+  @Get('temp-control-statuses')
+  @HttpCode(HttpStatus.OK)
+  async getDistinctTempControlStatuses(): Promise<boolean[]> {
+    return this.warehouseTypeService.getDistinctRequiresTempControlStatuses();
+  }
+
   @Get(':id')
   @HttpCode(HttpStatus.OK)
   async getWarehouseTypeById(
