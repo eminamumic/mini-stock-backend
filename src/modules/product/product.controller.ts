@@ -20,6 +20,9 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { SearchProductDto } from './dto/search-product.dto';
 import { Product } from 'src/entities/product/product';
+import { Warehouse } from 'src/entities/warehouse/warehouse';
+import { Supplier } from 'src/entities/supplier/supplier';
+import { Category } from 'src/entities/category/category';
 
 @Controller('products')
 export class ProductController {
@@ -53,6 +56,24 @@ export class ProductController {
   @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
   async search(@Query() searchDto: SearchProductDto): Promise<Product[]> {
     return this.productService.search(searchDto);
+  }
+
+  @Get('categories')
+  @HttpCode(HttpStatus.OK)
+  async getDistinctCategories(): Promise<Category[]> {
+    return this.productService.getDistinctCategories();
+  }
+
+  @Get('suppliers')
+  @HttpCode(HttpStatus.OK)
+  async getDistinctSuppliers(): Promise<Supplier[]> {
+    return this.productService.getDistinctSuppliers();
+  }
+
+  @Get('warehouses')
+  @HttpCode(HttpStatus.OK)
+  async getDistinctWarehouses(): Promise<Warehouse[]> {
+    return this.productService.getDistinctWarehouses();
   }
 
   @Get(':id')
