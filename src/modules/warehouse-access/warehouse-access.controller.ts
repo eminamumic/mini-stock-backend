@@ -19,6 +19,8 @@ import { CreateWarehouseAccessDto } from './dto/create-warehouse-access.dto';
 import { UpdateWarehouseAccessDto } from './dto/update-warehouse-access.dto';
 import { SearchWarehouseAccessDto } from './dto/search-warehouse-access.dto';
 import { WarehouseAccess } from 'src/entities/warehouse-access/warehouse-access';
+import { Warehouse } from 'src/entities/warehouse/warehouse';
+import { Employee } from 'src/entities/employee/employee';
 
 @Controller('warehouse-access')
 export class WarehouseAccessController {
@@ -48,6 +50,17 @@ export class WarehouseAccessController {
   @HttpCode(HttpStatus.OK)
   async getAllWarehouseAccess(): Promise<WarehouseAccess[]> {
     return this.warehouseAccessService.getAllWarehouseAccess();
+  }
+  @Get('employees')
+  @HttpCode(HttpStatus.OK)
+  async getDistinctEmployees(): Promise<Employee[]> {
+    return this.warehouseAccessService.getDistinctEmployeesWithAccess();
+  }
+
+  @Get('warehouses')
+  @HttpCode(HttpStatus.OK)
+  async getDistinctWarehouses(): Promise<Warehouse[]> {
+    return this.warehouseAccessService.getDistinctWarehousesWithAccess();
   }
 
   @Get(':id')

@@ -1,14 +1,19 @@
-// src/batch/batch.service.ts
 import {
   Injectable,
   ConflictException,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Like, FindOptionsWhere } from 'typeorm';
+import {
+  Repository,
+  Like,
+  FindOptionsWhere,
+  MoreThanOrEqual,
+  LessThanOrEqual,
+} from 'typeorm';
 import { Batch } from 'src/entities/batch/batch';
-import { Product } from 'src/entities/product/product'; // Potrebno za proveru productId
-import { CreateBatchDto } from './dto/create-batch.dto'; // Importujemo enum
+import { Product } from 'src/entities/product/product';
+import { CreateBatchDto } from './dto/create-batch.dto';
 import { UpdateBatchDto } from './dto/update-batch.dto';
 import { SearchBatchDto } from './dto/search-batch.dto';
 
@@ -98,11 +103,19 @@ export class BatchService {
     if (searchCriteria.salePrice) {
       whereClause.salePrice = searchCriteria.salePrice;
     }
-    if (searchCriteria.batchStatus) {
-      whereClause.batchStatus = searchCriteria.batchStatus;
-    }
+
     if (searchCriteria.note) {
       whereClause.note = Like(`%${searchCriteria.note}%`);
+    }
+
+    if (searchCriteria.minQuantity && searchCriteria.maxQuantity) {
+      whereClause.quantity =
+        MoreThanOrEqual(searchCriteria.minQuantity) &&
+        LessThanOrEqual(searchCriteria.maxQuantity);
+    } else if (searchCriteria.minQuantity) {
+      whereClause.quantity = MoreThanOrEqual(searchCriteria.minQuantity);
+    } else if (searchCriteria.maxQuantity) {
+      whereClause.quantity = LessThanOrEqual(searchCriteria.maxQuantity);
     }
 
     return this.batchRepository.find({

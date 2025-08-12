@@ -66,6 +66,16 @@ export class Batch {
   salePrice: number;
 
   @Column({
+    name: 'quantity',
+    type: 'decimal',
+    precision: 18,
+    scale: 4,
+    nullable: false,
+    default: 0,
+  })
+  quantity: number;
+
+  @Column({
     name: 'batch_status',
     type: 'varchar',
     length: 50,
