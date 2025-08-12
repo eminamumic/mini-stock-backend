@@ -47,6 +47,24 @@ export class SearchProductDto {
   categoryId?: number;
 
   @ApiProperty({
+    description: 'Warehouse ID for filtering',
+    example: 1,
+    required: false,
+  })
+  @IsOptional()
+  @IsNumberString()
+  warehouseId?: number;
+
+  @ApiProperty({
+    description: 'Supplier ID for filtering',
+    example: 1,
+    required: false,
+  })
+  @IsOptional()
+  @IsNumberString()
+  supplierId?: number;
+
+  @ApiProperty({
     description: 'Description for searching',
     example: 'high-performance',
     required: false,
