@@ -59,6 +59,24 @@ export class SupplierService {
     });
   }
 
+  async getDistinctLocations(): Promise<Location[]> {
+    const suppliers = await this.supplierRepository.find({
+      relations: ['location'],
+    });
+    const uniqueLocations = new Set(
+      suppliers.map((supplier) => supplier.location),
+    );
+    return Array.from(uniqueLocations).filter((loc) => loc !== null);
+  }
+
+  async getDistinctActiveStatuses(): Promise<boolean[]> {
+    const suppliers = await this.supplierRepository.find({
+      select: ['isActive'],
+    });
+    const statuses = new Set(suppliers.map((supplier) => supplier.isActive));
+    return Array.from(statuses);
+  }
+
   async search(searchCriteria: SearchSupplierDto): Promise<Supplier[]> {
     const whereClause: FindOptionsWhere<Supplier> = {};
 
