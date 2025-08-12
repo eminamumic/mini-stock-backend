@@ -4,7 +4,7 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, FindOptionsWhere } from 'typeorm';
+import { Repository } from 'typeorm';
 import { WarehouseAccess } from 'src/entities/warehouse-access/warehouse-access';
 import { Employee } from 'src/entities/employee/employee';
 import { Warehouse } from 'src/entities/warehouse/warehouse';
@@ -79,25 +79,87 @@ export class WarehouseAccessService {
   async search(
     searchCriteria: SearchWarehouseAccessDto,
   ): Promise<WarehouseAccess[]> {
-    const whereClause: FindOptionsWhere<WarehouseAccess> = {};
+    const queryBuilder =
+      this.warehouseAccessRepository.createQueryBuilder('access');
+
+    queryBuilder.leftJoinAndSelect('access.employee', 'employee');
+    queryBuilder.leftJoinAndSelect('access.warehouse', 'warehouse');
 
     if (searchCriteria.id) {
-      whereClause.id = parseInt(searchCriteria.id, 10);
+      queryBuilder.andWhere('access.id = :id', { id: searchCriteria.id });
     }
     if (searchCriteria.employeeId) {
-      whereClause.employeeId = parseInt(searchCriteria.employeeId, 10);
+      queryBuilder.andWhere('access.employeeId = :employeeId', {
+        employeeId: searchCriteria.employeeId,
+      });
     }
     if (searchCriteria.warehouseId) {
-      whereClause.warehouseId = parseInt(searchCriteria.warehouseId, 10);
+      queryBuilder.andWhere('access.warehouseId = :warehouseId', {
+        warehouseId: searchCriteria.warehouseId,
+      });
     }
-    if (searchCriteria.revocationDate) {
-      whereClause.revocationDate = new Date(searchCriteria.revocationDate);
+    if (searchCriteria.isActive !== undefined) {
+      queryBuilder.andWhere('access.isActive = :isActive', {
+        isActive: String(searchCriteria.isActive).toLowerCase() === 'true',
+      });
     }
 
-    return this.warehouseAccessRepository.find({
-      where: whereClause,
-      relations: ['employee', 'warehouse'],
+    if (searchCriteria.assignmentDate) {
+      const date = new Date(searchCriteria.assignmentDate);
+      if (!isNaN(date.getTime())) {
+        queryBuilder.andWhere('access.assignmentDate >= :assignmentDate', {
+          assignmentDate: date.toISOString(),
+        });
+      }
+    }
+
+    if (searchCriteria.revocationDate) {
+      queryBuilder.andWhere('access.revocationDate = :revocationDate', {
+        revocationDate: new Date(searchCriteria.revocationDate),
+      });
+    }
+
+    return queryBuilder.getMany();
+  }
+
+  async getDistinctEmployeesWithAccess(): Promise<Employee[]> {
+    const accesses = await this.warehouseAccessRepository.find({
+      relations: ['employee'],
+      select: ['employeeId'],
     });
+
+    const uniqueEmployeeIds = new Set<number>();
+    accesses.forEach((access) => uniqueEmployeeIds.add(access.employeeId));
+
+    if (uniqueEmployeeIds.size === 0) {
+      return [];
+    }
+
+    const uniqueEmployees = await this.employeeRepository.findByIds(
+      Array.from(uniqueEmployeeIds),
+    );
+
+    return uniqueEmployees;
+  }
+
+  async getDistinctWarehousesWithAccess(): Promise<Warehouse[]> {
+    const accesses = await this.warehouseAccessRepository.find({
+      relations: ['warehouse'],
+      select: ['warehouseId'],
+    });
+
+    const uniqueWarehouseIds = new Set<number>();
+    accesses.forEach((access) => uniqueWarehouseIds.add(access.warehouseId));
+
+    if (uniqueWarehouseIds.size === 0) {
+      return [];
+    }
+
+    const uniqueWarehouses = await this.warehouseRepository.findByIds(
+      Array.from(uniqueWarehouseIds),
+    );
+
+    return uniqueWarehouses;
   }
 
   async update(
