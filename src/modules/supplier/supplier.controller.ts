@@ -19,6 +19,7 @@ import { CreateSupplierDto } from './dto/create-supplier.dto';
 import { UpdateSupplierDto } from './dto/update-supplier.dto';
 import { SearchSupplierDto } from './dto/search-supplier.dto';
 import { Supplier } from 'src/entities/supplier/supplier';
+import { Location } from 'src/entities/location/location';
 
 @Controller('suppliers')
 export class SupplierController {
@@ -46,6 +47,18 @@ export class SupplierController {
   @HttpCode(HttpStatus.OK)
   async getAllSuppliers(): Promise<Supplier[]> {
     return this.supplierService.getAllSuppliers();
+  }
+
+  @Get('locations')
+  @HttpCode(HttpStatus.OK)
+  async getDistinctLocations(): Promise<Location[]> {
+    return this.supplierService.getDistinctLocations();
+  }
+
+  @Get('active-statuses')
+  @HttpCode(HttpStatus.OK)
+  async getDistinctActiveStatuses(): Promise<boolean[]> {
+    return this.supplierService.getDistinctActiveStatuses();
   }
 
   @Get(':id')
