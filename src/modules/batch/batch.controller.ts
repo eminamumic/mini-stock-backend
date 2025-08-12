@@ -20,6 +20,7 @@ import { CreateBatchDto } from './dto/create-batch.dto';
 import { UpdateBatchDto } from './dto/update-batch.dto';
 import { SearchBatchDto } from './dto/search-batch.dto';
 import { Batch } from 'src/entities/batch/batch';
+import { Product } from 'src/entities/product/product';
 
 @Controller('batches')
 export class BatchController {
@@ -53,6 +54,18 @@ export class BatchController {
   @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
   async search(@Query() searchDto: SearchBatchDto): Promise<Batch[]> {
     return this.batchService.searchBatches(searchDto);
+  }
+
+  @Get('products')
+  @HttpCode(HttpStatus.OK)
+  async getDistinctProducts(): Promise<Product[]> {
+    return this.batchService.getDistinctProductsInBatches();
+  }
+
+  @Get('expiration-dates')
+  @HttpCode(HttpStatus.OK)
+  async getDistinctExpirationDates(): Promise<Date[]> {
+    return this.batchService.getDistinctExpirationDates();
   }
 
   @Get(':id')

@@ -4,13 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import {
-  Repository,
-  Like,
-  FindOptionsWhere,
-  MoreThanOrEqual,
-  LessThanOrEqual,
-} from 'typeorm';
+import { Repository, MoreThanOrEqual } from 'typeorm';
 import { Batch } from 'src/entities/batch/batch';
 import { Product } from 'src/entities/product/product';
 import { CreateBatchDto } from './dto/create-batch.dto';
@@ -76,52 +70,109 @@ export class BatchService {
     });
   }
 
+  async getDistinctProductsInBatches(): Promise<Product[]> {
+    const batches = await this.batchRepository.find({
+      relations: ['product'],
+      select: { productId: true },
+    });
+    const uniqueProductIds = new Set<number>(
+      batches.map((batch) => batch.productId),
+    );
+    if (uniqueProductIds.size === 0) {
+      return [];
+    }
+    return this.productRepository.findByIds(Array.from(uniqueProductIds));
+  }
+
+  async getDistinctExpirationDates(): Promise<Date[]> {
+    const batches = await this.batchRepository.find({
+      select: { expirationDate: true },
+      where: { expirationDate: MoreThanOrEqual(new Date()) },
+    });
+
+    const uniqueDates = new Set<string>();
+    batches.forEach((batch) => {
+      if (batch.expirationDate) {
+        const expirationDate =
+          typeof batch.expirationDate === 'string'
+            ? new Date(batch.expirationDate)
+            : batch.expirationDate;
+
+        uniqueDates.add(expirationDate.toISOString().split('T')[0]);
+      }
+    });
+
+    return Array.from(uniqueDates)
+      .sort()
+      .map((dateString) => new Date(dateString));
+  }
+
   async searchBatches(searchCriteria: SearchBatchDto): Promise<Batch[]> {
-    const whereClause: FindOptionsWhere<Batch> = {};
+    const query = this.batchRepository
+      .createQueryBuilder('batch')
+      .leftJoinAndSelect('batch.product', 'product');
 
     if (searchCriteria.id) {
-      whereClause.id = searchCriteria.id;
+      query.andWhere('batch.id = :id', { id: searchCriteria.id });
     }
     if (searchCriteria.productId) {
-      whereClause.product = { id: searchCriteria.productId };
+      query.andWhere('batch.productId = :productId', {
+        productId: searchCriteria.productId,
+      });
     }
     if (searchCriteria.serialNumber) {
-      whereClause.serialNumber = Like(`%${searchCriteria.serialNumber}%`);
+      query.andWhere('batch.serialNumber LIKE :serialNumber', {
+        serialNumber: `%${searchCriteria.serialNumber}%`,
+      });
     }
     if (searchCriteria.lotNumber) {
-      whereClause.lotNumber = Like(`%${searchCriteria.lotNumber}%`);
+      query.andWhere('batch.lotNumber LIKE :lotNumber', {
+        lotNumber: `%${searchCriteria.lotNumber}%`,
+      });
     }
     if (searchCriteria.productionDate) {
-      whereClause.productionDate = searchCriteria.productionDate;
+      query.andWhere('batch.productionDate = :productionDate', {
+        productionDate: searchCriteria.productionDate,
+      });
     }
     if (searchCriteria.expirationDate) {
-      whereClause.expirationDate = searchCriteria.expirationDate;
+      query.andWhere('batch.expirationDate = :expirationDate', {
+        expirationDate: searchCriteria.expirationDate,
+      });
     }
     if (searchCriteria.purchasePrice) {
-      whereClause.purchasePrice = searchCriteria.purchasePrice;
+      query.andWhere('batch.purchasePrice = :purchasePrice', {
+        purchasePrice: searchCriteria.purchasePrice,
+      });
     }
     if (searchCriteria.salePrice) {
-      whereClause.salePrice = searchCriteria.salePrice;
+      query.andWhere('batch.salePrice = :salePrice', {
+        salePrice: searchCriteria.salePrice,
+      });
     }
 
     if (searchCriteria.note) {
-      whereClause.note = Like(`%${searchCriteria.note}%`);
+      query.andWhere('batch.note LIKE :note', {
+        note: `%${searchCriteria.note}%`,
+      });
     }
 
     if (searchCriteria.minQuantity && searchCriteria.maxQuantity) {
-      whereClause.quantity =
-        MoreThanOrEqual(searchCriteria.minQuantity) &&
-        LessThanOrEqual(searchCriteria.maxQuantity);
+      query.andWhere('batch.quantity BETWEEN :minQuantity AND :maxQuantity', {
+        minQuantity: searchCriteria.minQuantity,
+        maxQuantity: searchCriteria.maxQuantity,
+      });
     } else if (searchCriteria.minQuantity) {
-      whereClause.quantity = MoreThanOrEqual(searchCriteria.minQuantity);
+      query.andWhere('batch.quantity >= :minQuantity', {
+        minQuantity: searchCriteria.minQuantity,
+      });
     } else if (searchCriteria.maxQuantity) {
-      whereClause.quantity = LessThanOrEqual(searchCriteria.maxQuantity);
+      query.andWhere('batch.quantity <= :maxQuantity', {
+        maxQuantity: searchCriteria.maxQuantity,
+      });
     }
 
-    return this.batchRepository.find({
-      where: whereClause,
-      relations: ['product'],
-    });
+    return query.getMany();
   }
 
   async updateBatch(

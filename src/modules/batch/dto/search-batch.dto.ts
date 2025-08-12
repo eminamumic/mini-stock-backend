@@ -54,6 +54,11 @@ export class SearchBatchDto {
 
   @ApiProperty({ required: false })
   @IsOptional()
+  @IsNumber()
+  quantity?: number;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
   @IsString()
   note?: string;
 }
