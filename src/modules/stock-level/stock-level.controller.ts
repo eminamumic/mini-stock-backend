@@ -19,6 +19,8 @@ import { CreateStockLevelDto } from './dto/create-stock-level.dto';
 import { UpdateStockLevelDto } from './dto/update-stock-level.dto';
 import { SearchStockLevelDto } from './dto/search-stock-level.dto';
 import { StockLevel } from 'src/entities/stock-level/stock-level';
+import { Product } from 'src/entities/product/product';
+import { Warehouse } from 'src/entities/warehouse/warehouse';
 
 @Controller('stock-levels')
 export class StockLevelController {
@@ -66,6 +68,18 @@ export class StockLevelController {
     @Query() searchCriteria: SearchStockLevelDto,
   ): Promise<StockLevel[]> {
     return this.stockLevelService.search(searchCriteria);
+  }
+
+  @Get('products')
+  @HttpCode(HttpStatus.OK)
+  async getDistinctProducts(): Promise<Product[]> {
+    return this.stockLevelService.getDistinctProducts();
+  }
+
+  @Get('warehouses')
+  @HttpCode(HttpStatus.OK)
+  async getDistinctWarehouses(): Promise<Warehouse[]> {
+    return this.stockLevelService.getDistinctWarehouses();
   }
 
   @Put(':id')
