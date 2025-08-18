@@ -235,4 +235,13 @@ export class BatchService {
     const deleteResult = await this.batchRepository.delete(id);
     return deleteResult.affected !== 0;
   }
+
+  async sortBatchesByQuantity(order: 'ASC' | 'DESC'): Promise<Batch[]> {
+    return this.batchRepository.find({
+      relations: ['product'],
+      order: {
+        quantity: order,
+      },
+    });
+  }
 }
