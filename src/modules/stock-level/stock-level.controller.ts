@@ -70,13 +70,13 @@ export class StockLevelController {
     return this.stockLevelService.search(searchCriteria);
   }
 
-  @Get('products')
+  @Get('distinct/products')
   @HttpCode(HttpStatus.OK)
   async getDistinctProducts(): Promise<Product[]> {
     return this.stockLevelService.getDistinctProducts();
   }
 
-  @Get('warehouses')
+  @Get('distinct/warehouses')
   @HttpCode(HttpStatus.OK)
   async getDistinctWarehouses(): Promise<Warehouse[]> {
     return this.stockLevelService.getDistinctWarehouses();
