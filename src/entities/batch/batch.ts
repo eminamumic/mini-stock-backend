@@ -4,9 +4,11 @@ import {
   Column,
   ManyToOne,
   JoinColumn,
+  OneToMany,
 } from 'typeorm';
 
 import { Product } from '../product/product';
+import { StockMovement } from '../stock-movement/stock-movement';
 
 @Entity()
 export class Batch {
@@ -86,4 +88,7 @@ export class Batch {
 
   @Column({ type: 'text', nullable: true })
   note: string;
+
+  @OneToMany(() => StockMovement, (stockMovement) => stockMovement.batch)
+  stockMovements: StockMovement[];
 }
