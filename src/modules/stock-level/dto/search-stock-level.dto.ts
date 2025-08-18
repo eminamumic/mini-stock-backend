@@ -1,4 +1,9 @@
-import { IsOptional, IsNumberString, IsDateString } from 'class-validator';
+import {
+  IsOptional,
+  IsNumberString,
+  IsDateString,
+  IsString,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class SearchStockLevelDto {
@@ -66,4 +71,13 @@ export class SearchStockLevelDto {
   @IsOptional()
   @IsDateString()
   lastStockTakeDate?: Date;
+
+  @ApiProperty({
+    description: 'Filter for quantity ',
+    example: 'ASC',
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  orderBy?: 'ASC' | 'DESC';
 }
