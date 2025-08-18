@@ -1,6 +1,5 @@
 import { IsOptional, IsNumber, IsDateString, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { Transform } from 'class-transformer';
 
 export class SearchStockLevelDto {
   @ApiProperty({
@@ -9,7 +8,6 @@ export class SearchStockLevelDto {
     required: false,
   })
   @IsOptional()
-  @Transform(({ value }) => parseInt(value, 10))
   @IsNumber()
   id?: number;
 
@@ -19,7 +17,6 @@ export class SearchStockLevelDto {
     required: false,
   })
   @IsOptional()
-  @Transform(({ value }) => parseInt(value, 10))
   @IsNumber()
   productId?: number;
 
@@ -29,7 +26,6 @@ export class SearchStockLevelDto {
     required: false,
   })
   @IsOptional()
-  @Transform(({ value }) => parseInt(value, 10))
   @IsNumber()
   warehouseId?: number;
 
@@ -39,7 +35,6 @@ export class SearchStockLevelDto {
     required: false,
   })
   @IsOptional()
-  @Transform(({ value }) => parseFloat(value))
   @IsNumber()
   minQuantity?: number;
 
@@ -49,7 +44,6 @@ export class SearchStockLevelDto {
     required: false,
   })
   @IsOptional()
-  @Transform(({ value }) => parseFloat(value))
   @IsNumber()
   maxQuantity?: number;
 
@@ -59,7 +53,6 @@ export class SearchStockLevelDto {
     required: false,
   })
   @IsOptional()
-  @Transform(({ value }) => parseFloat(value))
   @IsNumber()
   reorderLevel?: number;
 
@@ -69,7 +62,6 @@ export class SearchStockLevelDto {
     required: false,
   })
   @IsOptional()
-  @Transform(({ value }) => parseFloat(value))
   @IsNumber()
   reorderQuantity?: number;
 
