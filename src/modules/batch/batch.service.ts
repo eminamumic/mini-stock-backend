@@ -107,6 +107,19 @@ export class BatchService {
       .map((dateString) => new Date(dateString));
   }
 
+  async getBatchesWithRelations(): Promise<Batch[]> {
+    return this.batchRepository
+      .createQueryBuilder('batch')
+      .leftJoinAndSelect('batch.product', 'product')
+      .leftJoinAndSelect('batch.stockMovements', 'stockMovement')
+      .leftJoinAndSelect('stockMovement.sourceWarehouse', 'sourceWarehouse')
+      .leftJoinAndSelect(
+        'stockMovement.destinationWarehouse',
+        'destinationWarehouse',
+      )
+      .getMany();
+  }
+
   async searchBatches(searchCriteria: SearchBatchDto): Promise<Batch[]> {
     const query = this.batchRepository
       .createQueryBuilder('batch')
