@@ -1,10 +1,6 @@
-import {
-  IsOptional,
-  IsNumberString,
-  IsDateString,
-  IsString,
-} from 'class-validator';
+import { IsOptional, IsNumber, IsDateString, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
 
 export class SearchStockLevelDto {
   @ApiProperty({
@@ -13,8 +9,9 @@ export class SearchStockLevelDto {
     required: false,
   })
   @IsOptional()
-  @IsNumberString()
-  id?: string;
+  @Transform(({ value }) => parseInt(value, 10))
+  @IsNumber()
+  id?: number;
 
   @ApiProperty({
     description: 'The ID of the product for searching',
@@ -22,8 +19,9 @@ export class SearchStockLevelDto {
     required: false,
   })
   @IsOptional()
-  @IsNumberString()
-  productId?: string;
+  @Transform(({ value }) => parseInt(value, 10))
+  @IsNumber()
+  productId?: number;
 
   @ApiProperty({
     description: 'The ID of the warehouse for searching',
@@ -31,17 +29,29 @@ export class SearchStockLevelDto {
     required: false,
   })
   @IsOptional()
-  @IsNumberString()
-  warehouseId?: string;
+  @Transform(({ value }) => parseInt(value, 10))
+  @IsNumber()
+  warehouseId?: number;
 
   @ApiProperty({
-    description: 'Current quantity for searching',
-    example: '100.50',
+    description: 'Minimum quantity for searching',
+    example: '10.00',
     required: false,
   })
   @IsOptional()
-  @IsNumberString()
-  currentQuantity?: string;
+  @Transform(({ value }) => parseFloat(value))
+  @IsNumber()
+  minQuantity?: number;
+
+  @ApiProperty({
+    description: 'Maximum quantity for searching',
+    example: '100.00',
+    required: false,
+  })
+  @IsOptional()
+  @Transform(({ value }) => parseFloat(value))
+  @IsNumber()
+  maxQuantity?: number;
 
   @ApiProperty({
     description: 'Reorder level for searching ',
@@ -49,8 +59,9 @@ export class SearchStockLevelDto {
     required: false,
   })
   @IsOptional()
-  @IsNumberString()
-  reorderLevel?: string;
+  @Transform(({ value }) => parseFloat(value))
+  @IsNumber()
+  reorderLevel?: number;
 
   @ApiProperty({
     description: 'Reorder quantity for searching ',
@@ -58,8 +69,9 @@ export class SearchStockLevelDto {
     required: false,
   })
   @IsOptional()
-  @IsNumberString()
-  reorderQuantity?: string;
+  @Transform(({ value }) => parseFloat(value))
+  @IsNumber()
+  reorderQuantity?: number;
 
   @ApiProperty({
     description: 'Last stock take date for searching (YYYY-MM-DD format).',
@@ -70,10 +82,10 @@ export class SearchStockLevelDto {
   })
   @IsOptional()
   @IsDateString()
-  lastStockTakeDate?: Date;
+  lastStockTakeDate?: string;
 
   @ApiProperty({
-    description: 'Filter for quantity ',
+    description: 'Sort order for quantity',
     example: 'ASC',
     required: false,
   })

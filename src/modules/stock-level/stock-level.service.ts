@@ -4,7 +4,7 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, FindOptionsWhere } from 'typeorm';
+import { Repository } from 'typeorm';
 import { StockLevel } from 'src/entities/stock-level/stock-level';
 import { Product } from 'src/entities/product/product';
 import { Warehouse } from 'src/entities/warehouse/warehouse';
@@ -109,36 +109,57 @@ export class StockLevelService {
   }
 
   async search(searchCriteria: SearchStockLevelDto): Promise<StockLevel[]> {
-    const whereClause: FindOptionsWhere<StockLevel> = {};
+    const query = this.stockLevelRepository
+      .createQueryBuilder('stockLevel')
+      .leftJoinAndSelect('stockLevel.product', 'product')
+      .leftJoinAndSelect('stockLevel.warehouse', 'warehouse');
 
     if (searchCriteria.id) {
-      whereClause.id = parseInt(searchCriteria.id, 10);
+      query.andWhere('stockLevel.id = :id', { id: searchCriteria.id });
     }
     if (searchCriteria.productId) {
-      whereClause.productId = parseInt(searchCriteria.productId, 10);
+      query.andWhere('stockLevel.productId = :productId', {
+        productId: searchCriteria.productId,
+      });
     }
     if (searchCriteria.warehouseId) {
-      whereClause.warehouseId = parseInt(searchCriteria.warehouseId, 10);
-    }
-    if (searchCriteria.currentQuantity) {
-      whereClause.currentQuantity = parseFloat(searchCriteria.currentQuantity);
-    }
-    if (searchCriteria.reorderLevel) {
-      whereClause.reorderLevel = parseFloat(searchCriteria.reorderLevel);
-    }
-    if (searchCriteria.reorderQuantity) {
-      whereClause.reorderQuantity = parseFloat(searchCriteria.reorderQuantity);
-    }
-    if (searchCriteria.lastStockTakeDate) {
-      whereClause.lastStockTakeDate = new Date(
-        searchCriteria.lastStockTakeDate,
-      );
+      query.andWhere('stockLevel.warehouseId = :warehouseId', {
+        warehouseId: searchCriteria.warehouseId,
+      });
     }
 
-    return this.stockLevelRepository.find({
-      where: whereClause,
-      relations: ['product', 'warehouse'],
-    });
+    if (searchCriteria.minQuantity) {
+      query.andWhere('stockLevel.currentQuantity >= :minQuantity', {
+        minQuantity: searchCriteria.minQuantity,
+      });
+    }
+    if (searchCriteria.maxQuantity) {
+      query.andWhere('stockLevel.currentQuantity <= :maxQuantity', {
+        maxQuantity: searchCriteria.maxQuantity,
+      });
+    }
+
+    if (searchCriteria.reorderLevel) {
+      query.andWhere('stockLevel.reorderLevel = :reorderLevel', {
+        reorderLevel: searchCriteria.reorderLevel,
+      });
+    }
+    if (searchCriteria.reorderQuantity) {
+      query.andWhere('stockLevel.reorderQuantity = :reorderQuantity', {
+        reorderQuantity: searchCriteria.reorderQuantity,
+      });
+    }
+    if (searchCriteria.lastStockTakeDate) {
+      query.andWhere('stockLevel.lastStockTakeDate = :lastStockTakeDate', {
+        lastStockTakeDate: searchCriteria.lastStockTakeDate,
+      });
+    }
+
+    if (searchCriteria.orderBy) {
+      query.orderBy('stockLevel.currentQuantity', searchCriteria.orderBy);
+    }
+
+    return query.getMany();
   }
 
   async update(
