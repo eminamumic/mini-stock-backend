@@ -76,6 +76,12 @@ export class BatchController {
     return this.batchService.sortBatchesByQuantity(order);
   }
 
+  @Get('with-relations')
+  @HttpCode(HttpStatus.OK)
+  async getBatchesWithRelations(): Promise<Batch[]> {
+    return this.batchService.getBatchesWithRelations();
+  }
+
   @Get(':id')
   @HttpCode(HttpStatus.OK)
   async findOne(@Param('id') id: number): Promise<Batch> {
