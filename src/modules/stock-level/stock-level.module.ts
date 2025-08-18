@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { StockLevel } from 'src/entities/stock-level/stock-level';
-import { StockLevelController } from './stock-level.sontroller';
+import { StockLevelController } from './stock-level.controller';
 import { StockLevelService } from './stock-level.service';
 import { Product } from 'src/entities/product/product';
 import { Warehouse } from 'src/entities/warehouse/warehouse';

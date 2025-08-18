@@ -74,6 +74,40 @@ export class StockLevelService {
     });
   }
 
+  async getDistinctProducts(): Promise<Product[]> {
+    const stockLevels = await this.stockLevelRepository.find({
+      relations: ['product'],
+      select: { productId: true },
+    });
+
+    const uniqueProductIds = new Set<number>(
+      stockLevels.map((sl) => sl.productId),
+    );
+
+    if (uniqueProductIds.size === 0) {
+      return [];
+    }
+
+    return this.productRepository.findByIds(Array.from(uniqueProductIds));
+  }
+
+  async getDistinctWarehouses(): Promise<Warehouse[]> {
+    const stockLevels = await this.stockLevelRepository.find({
+      relations: ['warehouse'],
+      select: { warehouseId: true },
+    });
+
+    const uniqueWarehouseIds = new Set<number>(
+      stockLevels.map((sl) => sl.warehouseId),
+    );
+
+    if (uniqueWarehouseIds.size === 0) {
+      return [];
+    }
+
+    return this.warehouseRepository.findByIds(Array.from(uniqueWarehouseIds));
+  }
+
   async search(searchCriteria: SearchStockLevelDto): Promise<StockLevel[]> {
     const whereClause: FindOptionsWhere<StockLevel> = {};
 
