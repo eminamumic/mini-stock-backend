@@ -68,6 +68,14 @@ export class BatchController {
     return this.batchService.getDistinctExpirationDates();
   }
 
+  @Get('sort-by-quantity')
+  @HttpCode(HttpStatus.OK)
+  async sortBatches(
+    @Query('order') order: 'ASC' | 'DESC' = 'DESC',
+  ): Promise<Batch[]> {
+    return this.batchService.sortBatchesByQuantity(order);
+  }
+
   @Get(':id')
   @HttpCode(HttpStatus.OK)
   async findOne(@Param('id') id: number): Promise<Batch> {
