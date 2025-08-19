@@ -1,98 +1,148 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# MiniStock Backend API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+This repository contains the backend component of the "MiniStock" application, a robust and scalable solution for inventory management, goods movement tracking, and warehouse organization. It is developed with a focus on modularity, performance, and reliability, using modern technologies and best practices.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+---
 
-## Description
+## 🎯 Project Goal
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+The main goal of this project is to provide a reliable and highly functional API service that supports complex inventory management operations. This includes:
+- Creating and managing entities such as products, warehouses, and suppliers.
+- Detailed tracking of goods movements (inbound, outbound, transfers) with references to documents and processes.
+- Efficient data searching and filtering to provide users with quick access to information.
+- Maintaining data consistency through strict relational integrity and validation.
 
-## Project setup
+## 🛠️ Technology Stack
+
+The backend is built on a foundation of modern and efficient technologies:
+- **NestJS**: A progressive Node.js framework for building scalable server-side applications, built on TypeScript.
+- **TypeScript**: A programming language that brings static typing, which significantly improves code quality and maintainability.
+- **TypeORM**: A powerful ORM (Object-Relational Mapper) that allows for elegant database interaction, reducing the need for raw SQL queries.
+- **MySQL**: A robust relational database that ensures data consistency, integrity, and persistence.
+- **Swagger/OpenAPI**: Used for automatically generating interactive API documentation, facilitating testing and integration.
+
+## 📂 Project Architecture
+
+The project is organized using a modular architecture, where each key domain (`StockMovement`, `Warehouse`, `Product`, etc.) has its own dedicated module. This structure enables:
+- **Clear Separation of Concerns**: Each module has its own `Controller`, `Service`, and `Module`, which isolates business logic and makes the codebase easier to navigate.
+- **Simple Maintenance**: Modifications within one domain do not directly affect other parts of the system.
+- **Scalability**: It's easier to add new functionalities and entities without compromising the existing structure.
+
+---
+
+## 📊 Schemas (DTOs)
+
+Each entity has defined schemas (DTOs) that ensure a proper data structure for API operations.
+
+- `Create...Dto`: Schema for creating a new record.
+- `Update...Dto`: Schema for updating an existing record.
+- `Search...Dto`: Schema for sending search criteria.
+
+---
+
+## 🚀 API Endpoints
+
+All API endpoints are organized by entity and are accessible via standard HTTP methods.
+
+### **Stock Movements**
+Operations related to stock movements (inbound, outbound, transfer).
+- `POST /stock-movements` - Creates a new stock movement.
+- `GET /stock-movements` - Retrieves all stock movements.
+- `GET /stock-movements/search` - Searches for stock movements based on various criteria.
+- `GET /stock-movements/products` - Retrieves unique products from stock movements for filtering.
+- `GET /stock-movements/employees` - Retrieves unique employees from stock movements for filtering.
+- `GET /stock-movements/suppliers` - Retrieves unique suppliers from stock movement records for filtering.
+- `GET /stock-movements/movement-types` - Retrieves unique movement types.
+- `GET /stock-movements/dates` - Retrieves unique movement dates.
+- `GET /stock-movements/process-numbers` - Retrieves unique process numbers.
+- `GET /stock-movements/{id}` - Retrieves a single stock movement by ID.
+- `PUT /stock-movements/{id}` - Updates a stock movement by ID.
+- `DELETE /stock-movements/{id}` - Deletes a stock movement by ID.
+
+### **Warehouses**
+Operations related to warehouses.
+- `POST /warehouses` - Creates a new warehouse.
+- `GET /warehouses` - Retrieves all warehouses.
+- `GET /warehouses/search` - Searches for warehouses.
+- `GET /warehouses/locations` - Retrieves unique warehouse locations for filtering.
+- `GET /warehouses/warehouse-types` - Retrieves unique warehouse types for filtering.
+- `GET /warehouses/is-active` - Retrieves unique active statuses (`true`/`false`).
+- `GET /warehouses/{id}` - Retrieves a single warehouse by ID.
+- `PUT /warehouses/{id}` - Updates a warehouse by ID.
+- `DELETE /warehouses/{id}` - Deletes a warehouse by ID.
+
+### **Products**
+Operations related to products.
+- `POST /products` - Creates a new product.
+- `GET /products` - Retrieves all products.
+- `GET /products/search` - Searches for products.
+- `GET /products/categories` - Retrieves unique product categories for filtering.
+- `GET /products/suppliers` - Retrieves unique product suppliers for filtering.
+- `GET /products/warehouses` - Retrieves unique warehouses containing products.
+- `GET /products/{id}` - Retrieves a single product by ID.
+- `PUT /products/{id}` - Updates a product by ID.
+- `DELETE /products/{id}` - Deletes a product by ID.
+
+### **Categories**
+Operations related to product categories.
+- `POST /categories` - Creates a new category.
+- `GET /categories` - Retrieves all categories.
+- `GET /categories/search` - Searches for categories.
+- `GET /categories/paren-categories` - Retrieves unique parent categories.
+- `GET /categories/hierarchy-levels` - Retrieves unique hierarchy levels.
+- `GET /categories/category-types` - Retrieves unique category types.
+- `GET /categories/{id}` - Retrieves a single category by ID.
+- `PUT /categories/{id}` - Updates a category by ID.
+- `DELETE /categories/{id}` - Deletes a category by ID.
+
+### **Batches**
+Operations related to product batches.
+- `POST /batches` - Creates a new batch.
+- `GET /batches` - Retrieves all batches.
+- `GET /batches/search` - Searches for batches.
+- `GET /batches/products` - Retrieves unique products from batches.
+- `GET /batches/expiration-dates` - Retrieves unique expiration dates.
+- `GET /batches/sort-by-quantity` - Retrieves batches sorted by quantity.
+- `GET /batches/with-relations` - Retrieves batches with related entities.
+- `GET /batches/{id}` - Retrieves a single batch by ID.
+- `PUT /batches/{id}` - Updates a batch by ID.
+- `DELETE /batches/{id}` - Deletes a batch by ID.
+
+### **Stock Levels**
+Operations related to stock levels.
+- `POST /stock-levels` - Creates a new stock level.
+- `GET /stock-levels` - Retrieves all stock levels.
+- `GET /stock-levels/search` - Searches for stock levels.
+- `GET /stock-levels/distinct/products` - Retrieves unique products from stock levels.
+- `GET /stock-levels/distinct/warehouses` - Retrieves unique warehouses from stock levels.
+- `GET /stock-levels/{id}` - Retrieves a single stock level by ID.
+- `PUT /stock-levels/{id}` - Updates a stock level by ID.
+- `DELETE /stock-levels/{id}` - Deletes a stock level by ID.
+
+### **Other Entities**
+
+- **Users**: `/users`
+- **Employees**: `/employees`
+- **Suppliers**: `/suppliers`
+- **Warehouse Types**: `/warehouse-types`
+- **Locations**: `/locations`
+- **Warehouse Access**: `/warehouse-access`
+
+---
+
+### Project Structure:
 
 ```bash
-$ npm install
-```
-
-## Compile and run the project
-
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
-```
-
-## Run tests
-
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
-```
-
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
-
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+/src
+├── entities/                   # Database entity definitions with TypeORM annotations
+├── modules/                    # Main application modules (e.g., stock-movement, warehouse)
+│   ├── stock-movement/         # Module for stock movement operations
+│   │   ├── dto/                # Data Transfer Objects (DTOs) for validation
+│   │   ├── stock-movement.controller.ts  # Layer for handling HTTP requests
+│   │   ├── stock-movement.service.ts     # Layer for business logic and database interaction
+│   │   └── stock-movement.module.ts      # Module configuration
+│   └── warehouse/              # Module for warehouse management
+│       └── ...
+├── app.module.ts               # Main module that connects all other modules
+├── main.ts                     # Application entry point and service configuration (e.g., Swagger)
+└── ...
