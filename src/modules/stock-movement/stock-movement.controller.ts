@@ -61,33 +61,6 @@ export class StockMovementController {
     }
     return movement;
   }
-
-  @Put(':id')
-  @HttpCode(HttpStatus.OK)
-  @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
-  async update(
-    @Param('id') id: number,
-    @Body() updateStockMovementDto: UpdateStockMovementDto,
-  ): Promise<StockMovement> {
-    const updatedMovement = await this.stockMovementService.updateStockMovement(
-      id,
-      updateStockMovementDto,
-    );
-    if (!updatedMovement) {
-      throw new NotFoundException(`Stock movement with ID ${id} not found.`);
-    }
-    return updatedMovement;
-  }
-
-  @Delete(':id')
-  @HttpCode(HttpStatus.NO_CONTENT)
-  async remove(@Param('id') id: number): Promise<void> {
-    const deleted = await this.stockMovementService.deleteStockMovement(id);
-    if (!deleted) {
-      throw new NotFoundException(`Stock movement with ID ${id} not found.`);
-    }
-  }
-
   @Get('products')
   @HttpCode(HttpStatus.OK)
   async getDistinctProducts(): Promise<Product[]> {
@@ -122,5 +95,31 @@ export class StockMovementController {
   @HttpCode(HttpStatus.OK)
   async getDistinctProcessNumbers(): Promise<number[]> {
     return this.stockMovementService.getDistinctProcessNumbers();
+  }
+
+  @Put(':id')
+  @HttpCode(HttpStatus.OK)
+  @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
+  async update(
+    @Param('id') id: number,
+    @Body() updateStockMovementDto: UpdateStockMovementDto,
+  ): Promise<StockMovement> {
+    const updatedMovement = await this.stockMovementService.updateStockMovement(
+      id,
+      updateStockMovementDto,
+    );
+    if (!updatedMovement) {
+      throw new NotFoundException(`Stock movement with ID ${id} not found.`);
+    }
+    return updatedMovement;
+  }
+
+  @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async remove(@Param('id') id: number): Promise<void> {
+    const deleted = await this.stockMovementService.deleteStockMovement(id);
+    if (!deleted) {
+      throw new NotFoundException(`Stock movement with ID ${id} not found.`);
+    }
   }
 }
