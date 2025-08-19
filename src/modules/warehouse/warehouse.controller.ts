@@ -19,6 +19,8 @@ import { CreateWarehouseDto } from './dto/create-warehouse.dto';
 import { UpdateWarehouseDto } from './dto/update-warehouse.dto';
 import { SearchWarehouseDto } from './dto/search-warehouse.dto';
 import { Warehouse } from 'src/entities/warehouse/warehouse';
+import { Location } from 'src/entities/location/location';
+import { WarehouseType } from 'src/entities/warehouse-type/warehouse-type';
 
 @Controller('warehouses')
 export class WarehouseController {
@@ -46,6 +48,24 @@ export class WarehouseController {
   @HttpCode(HttpStatus.OK)
   async getAllWarehouses(): Promise<Warehouse[]> {
     return this.warehouseService.getAllWarehouses();
+  }
+
+  @Get('locations')
+  @HttpCode(HttpStatus.OK)
+  async getDistinctLocations(): Promise<Location[]> {
+    return this.warehouseService.getDistinctLocations();
+  }
+
+  @Get('warehouse-types')
+  @HttpCode(HttpStatus.OK)
+  async getDistinctWarehouseTypes(): Promise<WarehouseType[]> {
+    return this.warehouseService.getDistinctWarehouseTypes();
+  }
+
+  @Get('is-active')
+  @HttpCode(HttpStatus.OK)
+  async getDistinctIsActive(): Promise<boolean[]> {
+    return this.warehouseService.getDistinctIsActive();
   }
 
   @Get(':id')
