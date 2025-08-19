@@ -13,6 +13,9 @@ async function bootstrap() {
     .setVersion('1.0')
     .addTag('users', 'Operations related to user accounts')
     .addTag('employees', 'Operations related to employees')
+    .addTag('products', 'Operations related to products')
+    .addTag('categories', 'Operations related to product categories')
+    .addTag('batches', 'Operations related to product batches')
     .addTag(
       'stock-levels',
       'Operations related to product stock levels in warehouses',
