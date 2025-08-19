@@ -52,15 +52,6 @@ export class StockMovementController {
     return this.stockMovementService.searchStockMovements(searchDto);
   }
 
-  @Get(':id')
-  @HttpCode(HttpStatus.OK)
-  async findOne(@Param('id') id: number): Promise<StockMovement> {
-    const movement = await this.stockMovementService.getStockMovementById(id);
-    if (!movement) {
-      throw new NotFoundException(`Stock movement with ID ${id} not found.`);
-    }
-    return movement;
-  }
   @Get('products')
   @HttpCode(HttpStatus.OK)
   async getDistinctProducts(): Promise<Product[]> {
@@ -95,6 +86,15 @@ export class StockMovementController {
   @HttpCode(HttpStatus.OK)
   async getDistinctProcessNumbers(): Promise<number[]> {
     return this.stockMovementService.getDistinctProcessNumbers();
+  }
+  @Get(':id')
+  @HttpCode(HttpStatus.OK)
+  async findOne(@Param('id') id: number): Promise<StockMovement> {
+    const movement = await this.stockMovementService.getStockMovementById(id);
+    if (!movement) {
+      throw new NotFoundException(`Stock movement with ID ${id} not found.`);
+    }
+    return movement;
   }
 
   @Put(':id')
