@@ -174,4 +174,40 @@ export class WarehouseService {
     const deleteResult = await this.warehouseRepository.delete(id);
     return deleteResult.affected !== 0;
   }
+
+  async getDistinctLocations(): Promise<Location[]> {
+    const warehouses = await this.warehouseRepository.find({
+      relations: ['location'],
+    });
+    const uniqueLocations = Array.from(
+      new Set(warehouses.map((w) => w.locationId)),
+    )
+      .map((id) => warehouses.find((w) => w.locationId === id)?.location)
+      .filter((location) => location !== undefined);
+    return uniqueLocations;
+  }
+
+  async getDistinctWarehouseTypes(): Promise<WarehouseType[]> {
+    const warehouses = await this.warehouseRepository.find({
+      relations: ['warehouseType'],
+    });
+    const uniqueWarehouseTypes = Array.from(
+      new Set(warehouses.map((w) => w.warehouseTypeId)),
+    )
+      .map(
+        (id) => warehouses.find((w) => w.warehouseTypeId === id)?.warehouseType,
+      )
+      .filter((type) => type !== undefined);
+    return uniqueWarehouseTypes;
+  }
+
+  async getDistinctIsActive(): Promise<boolean[]> {
+    const warehouses = await this.warehouseRepository.find({
+      select: ['isActive'],
+    });
+    const uniqueStatuses = Array.from(
+      new Set(warehouses.map((w) => w.isActive)),
+    );
+    return uniqueStatuses;
+  }
 }
