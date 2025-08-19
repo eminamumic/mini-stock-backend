@@ -1,3 +1,9 @@
+
+
+![Logo MiniStock aplikacije](src/assets/logo.png)
+
+
+
 # MiniStock Backend API
 
 This repository contains the backend component of the "MiniStock" application, a robust and scalable solution for inventory management, goods movement tracking, and warehouse organization. It is developed with a focus on modularity, performance, and reliability, using modern technologies and best practices.
