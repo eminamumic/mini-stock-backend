@@ -8,6 +8,7 @@ import { Employee } from 'src/entities/employee/employee';
 import { Supplier } from 'src/entities/supplier/supplier';
 import { Batch } from 'src/entities/batch/batch';
 import { Warehouse } from 'src/entities/warehouse/warehouse';
+import { StockLevel } from 'src/entities/stock-level/stock-level';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { Warehouse } from 'src/entities/warehouse/warehouse';
       Supplier,
       Batch,
       Warehouse,
+      StockLevel,
     ]),
   ],
   controllers: [StockMovementController],
