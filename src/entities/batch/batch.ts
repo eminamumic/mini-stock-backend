@@ -10,7 +10,7 @@ import {
 import { Product } from '../product/product';
 import { StockMovement } from '../stock-movement/stock-movement';
 
-@Entity('batches')
+@Entity('batch')
 export class Batch {
   @PrimaryGeneratedColumn()
   id: number;
