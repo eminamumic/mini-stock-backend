@@ -32,9 +32,7 @@ export class StockMovementController {
   async create(
     @Body() createStockMovementDto: CreateStockMovementDto,
   ): Promise<StockMovement> {
-    return this.stockMovementService.createStockMovement(
-      createStockMovementDto,
-    );
+    return this.stockMovementService.create(createStockMovementDto);
   }
 
   @Get()
@@ -49,7 +47,7 @@ export class StockMovementController {
   async search(
     @Query() searchDto: SearchStockMovementDto,
   ): Promise<StockMovement[]> {
-    return this.stockMovementService.searchStockMovements(searchDto);
+    return this.stockMovementService.search(searchDto);
   }
 
   @Get('products')
@@ -104,7 +102,7 @@ export class StockMovementController {
     @Param('id') id: number,
     @Body() updateStockMovementDto: UpdateStockMovementDto,
   ): Promise<StockMovement> {
-    const updatedMovement = await this.stockMovementService.updateStockMovement(
+    const updatedMovement = await this.stockMovementService.update(
       id,
       updateStockMovementDto,
     );
@@ -117,7 +115,7 @@ export class StockMovementController {
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async remove(@Param('id') id: number): Promise<void> {
-    const deleted = await this.stockMovementService.deleteStockMovement(id);
+    const deleted = await this.stockMovementService.delete(id);
     if (!deleted) {
       throw new NotFoundException(`Stock movement with ID ${id} not found.`);
     }
