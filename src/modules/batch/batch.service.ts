@@ -253,7 +253,7 @@ export class BatchService {
     return this.batchRepository.find({
       relations: ['product'],
       order: {
-        quantity: order,
+        initialQuantity: order,
       },
     });
   }
