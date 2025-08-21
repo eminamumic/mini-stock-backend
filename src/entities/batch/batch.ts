@@ -10,7 +10,7 @@ import {
 import { Product } from '../product/product';
 import { StockMovement } from '../stock-movement/stock-movement';
 
-@Entity()
+@Entity('batches')
 export class Batch {
   @PrimaryGeneratedColumn()
   id: number;
@@ -68,14 +68,24 @@ export class Batch {
   salePrice: number;
 
   @Column({
-    name: 'quantity',
+    name: 'initial_quantity',
     type: 'decimal',
     precision: 18,
     scale: 4,
     nullable: false,
     default: 0,
   })
-  quantity: number;
+  initialQuantity: number;
+
+  @Column({
+    name: 'current_quantity',
+    type: 'decimal',
+    precision: 18,
+    scale: 4,
+    nullable: false,
+    default: 0,
+  })
+  currentQuantity: number;
 
   @Column({
     name: 'batch_status',
@@ -88,6 +98,12 @@ export class Batch {
 
   @Column({ type: 'text', nullable: true })
   note: string;
+
+  @Column({ name: 'created_at', type: 'timestamp' })
+  createdAt: Date;
+
+  @Column({ name: 'updated_at', type: 'timestamp' })
+  updatedAt: Date;
 
   @OneToMany(() => StockMovement, (stockMovement) => stockMovement.batch)
   stockMovements: StockMovement[];
