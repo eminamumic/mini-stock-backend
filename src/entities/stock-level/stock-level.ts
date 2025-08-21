@@ -24,7 +24,7 @@ export class StockLevel {
   warehouseId: number;
 
   @ManyToOne(() => Warehouse)
-  @JoinColumn({ name: 'warehouseId' })
+  @JoinColumn({ name: 'warehouse_id' })
   warehouse: Warehouse;
 
   @Column({
@@ -57,4 +57,19 @@ export class StockLevel {
 
   @Column({ name: 'last_stock_take_date', type: 'date', nullable: true })
   lastStockTakeDate: Date;
+
+  @Column({
+    name: 'created_at',
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
+  createdAt: Date;
+
+  @Column({
+    name: 'updated_at',
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+    onUpdate: 'CURRENT_TIMESTAMP',
+  })
+  updatedAt: Date;
 }
