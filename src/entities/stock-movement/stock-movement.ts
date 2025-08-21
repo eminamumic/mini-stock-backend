@@ -21,10 +21,11 @@ export class StockMovement {
   @Column({ name: 'process_number', type: 'bigint', nullable: true })
   processNumber: number;
 
-  @CreateDateColumn({
+  @Column({
     name: 'movement_timestamp',
     type: 'timestamp',
     nullable: false,
+    default: () => 'CURRENT_TIMESTAMP',
   })
   movementTimestamp: Date;
 
