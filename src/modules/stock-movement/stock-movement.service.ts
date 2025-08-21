@@ -108,7 +108,6 @@ export class StockMovementService {
     return savedMovement;
   }
 
-  // Helper method to apply movement impact on StockLevel
   private async applyMovementImpact(movement: StockMovement): Promise<void> {
     const {
       movementType,
@@ -116,6 +115,7 @@ export class StockMovementService {
       quantity,
       sourceWarehouseId,
       destinationWarehouseId,
+      batchId,
     } = movement;
 
     switch (movementType) {
@@ -131,6 +131,7 @@ export class StockMovementService {
           quantity,
           'add',
         );
+        await this.updateBatchQuantity(batchId, quantity, 'add');
         break;
       case 'Out':
         if (!sourceWarehouseId) {
@@ -144,6 +145,7 @@ export class StockMovementService {
           quantity,
           'subtract',
         );
+        await this.updateBatchQuantity(batchId, quantity, 'subtract');
         break;
       case 'Transfer':
         if (!sourceWarehouseId || !destinationWarehouseId) {
@@ -163,8 +165,9 @@ export class StockMovementService {
           quantity,
           'add',
         );
+
         break;
-      case 'Proccessing':
+      case 'Prerada':
         if (sourceWarehouseId && !destinationWarehouseId) {
           await this.updateStockLevel(
             productId,
@@ -172,6 +175,7 @@ export class StockMovementService {
             quantity,
             'subtract',
           );
+          await this.updateBatchQuantity(batchId, quantity, 'subtract');
         } else if (!sourceWarehouseId && destinationWarehouseId) {
           await this.updateStockLevel(
             productId,
@@ -179,21 +183,21 @@ export class StockMovementService {
             quantity,
             'add',
           );
+          await this.updateBatchQuantity(batchId, quantity, 'add');
         } else {
           throw new BadRequestException(
-            'For "Proccessing" movement, exactly one of sourceWarehouseId or destinationWarehouseId must be provided.',
+            'For "Prerada" movement, exactly one of sourceWarehouseId or destinationWarehouseId must be provided.',
           );
         }
         break;
       default:
         console.warn(
-          `Unhandled movement type: ${movementType}. StockLevel not updated.`,
+          `Unhandled movement type: ${movementType}. StockLevel and Batch quantity not updated.`,
         );
         break;
     }
   }
 
-  // Helper method to reverse movement impact on StockLevel
   private async reverseMovementImpact(movement: StockMovement): Promise<void> {
     const {
       movementType,
@@ -201,6 +205,7 @@ export class StockMovementService {
       quantity,
       sourceWarehouseId,
       destinationWarehouseId,
+      batchId,
     } = movement;
 
     try {
@@ -213,6 +218,7 @@ export class StockMovementService {
               quantity,
               'subtract',
             );
+            await this.updateBatchQuantity(batchId, quantity, 'subtract');
           }
           break;
         case 'Out':
@@ -223,6 +229,7 @@ export class StockMovementService {
               quantity,
               'add',
             );
+            await this.updateBatchQuantity(batchId, quantity, 'add');
           }
           break;
         case 'Transfer':
@@ -232,7 +239,7 @@ export class StockMovementService {
               sourceWarehouseId,
               quantity,
               'add',
-            ); // Add back to source
+            );
           }
           if (destinationWarehouseId) {
             await this.updateStockLevel(
@@ -240,41 +247,42 @@ export class StockMovementService {
               destinationWarehouseId,
               quantity,
               'subtract',
-            ); // Subtract from destination
+            );
           }
+
           break;
-        case 'Proccessing':
+        case 'Prerada':
           if (sourceWarehouseId && !destinationWarehouseId) {
             await this.updateStockLevel(
               productId,
               sourceWarehouseId,
               quantity,
               'add',
-            ); // Add back raw material
+            );
+            await this.updateBatchQuantity(batchId, quantity, 'add');
           } else if (!sourceWarehouseId && destinationWarehouseId) {
             await this.updateStockLevel(
               productId,
               destinationWarehouseId,
               quantity,
               'subtract',
-            ); // Subtract finished product
+            );
+            await this.updateBatchQuantity(batchId, quantity, 'subtract');
           }
           break;
         default:
           console.warn(
-            `Unhandled movement type on reversal: ${movementType}. StockLevel might need manual adjustment.`,
+            `Unhandled movement type on reversal: ${movementType}. StockLevel and Batch quantity might need manual adjustment.`,
           );
           break;
       }
     } catch (error) {
-      // Re-throw if stock level adjustment fails during reversal to maintain data integrity
       throw new BadRequestException(
-        `Failed to adjust stock levels during reversal: ${error}`,
+        `Failed to adjust stock levels or batch quantities during reversal: ${error}`,
       );
     }
   }
 
-  // Helper method to update or create StockLevel
   private async updateStockLevel(
     productId: number,
     warehouseId: number,
@@ -294,7 +302,7 @@ export class StockMovementService {
       stockLevel = this.stockLevelRepository.create({
         productId,
         warehouseId,
-        currentQuantity: 0, // Initialize with 0 if creating
+        currentQuantity: 0,
         createdAt: new Date(),
         updatedAt: new Date(),
       });
@@ -306,7 +314,6 @@ export class StockMovementService {
     if (operation === 'add') {
       stockLevel.currentQuantity = currentQty + qtyToAdjust;
     } else {
-      // subtract
       if (currentQty < qtyToAdjust) {
         throw new BadRequestException(
           `Insufficient stock for Product ID ${productId} in Warehouse ID ${warehouseId}. Available: ${currentQty}, Requested: ${qtyToAdjust}.`,
@@ -316,6 +323,37 @@ export class StockMovementService {
     }
     stockLevel.updatedAt = new Date();
     await this.stockLevelRepository.save(stockLevel);
+  }
+
+  private async updateBatchQuantity(
+    batchId: number,
+    quantity: number,
+    operation: 'add' | 'subtract',
+  ): Promise<void> {
+    let batch = await this.batchRepository.findOne({
+      where: { id: batchId },
+    });
+
+    if (!batch) {
+      throw new BadRequestException(`Batch with ID ${batchId} not found.`);
+    }
+
+    const currentBatchQty = parseFloat(batch.currentQuantity as any);
+    const qtyToAdjust = parseFloat(quantity as any);
+
+    if (operation === 'add') {
+      batch.currentQuantity = currentBatchQty + qtyToAdjust;
+    } else {
+      // subtract
+      if (currentBatchQty < qtyToAdjust) {
+        throw new BadRequestException(
+          `Insufficient quantity in Batch ID ${batchId}. Available: ${currentBatchQty}, Requested: ${qtyToAdjust}.`,
+        );
+      }
+      batch.currentQuantity = currentBatchQty - qtyToAdjust;
+    }
+    batch.updatedAt = new Date();
+    await this.batchRepository.save(batch);
   }
 
   async getAllStockMovements(): Promise<StockMovement[]> {
@@ -420,39 +458,30 @@ export class StockMovementService {
       return null;
     }
 
-    // Capture the old state of the movement before merging DTO
     const oldMovementState: StockMovement = { ...stockMovementToUpdate };
 
-    // Apply updates to the movement entity
     this.stockMovementRepository.merge(stockMovementToUpdate, {
       ...updateStockMovementDto,
       updatedAt: new Date(),
     });
 
     try {
-      // 1. Revert the impact of the OLD movement from stock levels
       await this.reverseMovementImpact(oldMovementState);
 
-      // 2. Save the updated movement in the database
       const updatedMovement = await this.stockMovementRepository.save(
         stockMovementToUpdate,
       );
 
-      // 3. Apply the impact of the NEW (updated) movement to stock levels
       await this.applyMovementImpact(updatedMovement);
 
       return updatedMovement;
     } catch (error) {
       console.error(
-        `Error updating StockMovement ID ${id} and adjusting StockLevels:`,
+        `Error updating StockMovement ID ${id} and adjusting StockLevels/Batch quantities:`,
         error,
       );
-      // IMPORTANT: If an error occurs during stock level adjustment after saving the movement,
-      // you might have a data inconsistency. For robustness, you should consider:
-      // a) Rolling back the database transaction for StockMovement itself (requires @Transactional decorator or manual transaction management).
-      // b) Logging this critical error and alerting administrators for manual intervention.
       throw new BadRequestException(
-        `Failed to update movement and adjust stock levels: ${error}`,
+        `Failed to update movement and adjust stock levels/batch quantities: ${error}`,
       );
     }
   }
@@ -467,15 +496,14 @@ export class StockMovementService {
     }
 
     try {
-      // Reverse the impact on StockLevel before deleting the movement
       await this.reverseMovementImpact(movementToDelete);
     } catch (error) {
       console.error(
-        `Failed to reverse StockLevel for movement ID ${id} on delete:`,
+        `Failed to reverse StockLevel/Batch quantity for movement ID ${id} on delete:`,
         error,
       );
       throw new BadRequestException(
-        `Failed to adjust stock levels upon deleting movement: ${error}`,
+        `Failed to adjust stock levels/batch quantities upon deleting movement: ${error}`,
       );
     }
 
