@@ -82,7 +82,28 @@ export class CreateBatchDto {
   @Type(() => Number)
   @IsNumber()
   @Min(0)
-  quantity: number;
+  initialQuantity: number;
+
+  @ApiPropertyOptional({
+    description:
+      'Current quantity of items in the batch (defaults to initialQuantity if not set)',
+    example: 100,
+    minimum: 0,
+  })
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  @Min(0)
+  currentQuantity?: number;
+
+  @ApiPropertyOptional({
+    description: 'Batch status',
+    example: 'Active',
+    default: 'Active',
+  })
+  @IsOptional()
+  @IsString()
+  batchStatus?: string;
 
   @ApiPropertyOptional({
     description: 'Additional notes about the batch',
@@ -91,4 +112,24 @@ export class CreateBatchDto {
   @IsOptional()
   @IsString()
   note?: string;
+
+  @ApiPropertyOptional({
+    description: 'Creation timestamp',
+    example: '2025-08-22T12:00:00Z',
+    type: String,
+    format: 'date-time',
+  })
+  @IsOptional()
+  @IsDateString()
+  createdAt?: string;
+
+  @ApiPropertyOptional({
+    description: 'Last update timestamp',
+    example: '2025-08-22T12:00:00Z',
+    type: String,
+    format: 'date-time',
+  })
+  @IsOptional()
+  @IsDateString()
+  updatedAt?: string;
 }
